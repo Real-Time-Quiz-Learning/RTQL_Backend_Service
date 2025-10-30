@@ -1,9 +1,16 @@
-const express = require('express')
+// const express = require('express')
+import express  from 'express';
+
+import LoginRouter from './routes/loginRoute.js';
+import SignupRouter from './routes/signup.js';
 
 class Server {
   constructor() {
     this.port = 3000;
     this.app = express();
+
+    this.loginRouter = new LoginRouter();
+    this.signupRouter = new SignupRouter();
 
   }
 
@@ -11,19 +18,26 @@ class Server {
     console.log("Server is started")
 
     this.app.get('/', (req, res) => {
-      res.send('Hello World!')
+      res.send('RTQL Backend Server woohoo')
     })
 
-    this.app.get('/auth', (req, res) => {
-      res.send('auth route woohoo')
+    this.app.use('/login', this.loginRouter.getRouter())
+
+    this.app.use('/signup', this.signupRouter.getRouter())
+
+    // Update this once questionRouter.js is created --> for dealing with question stuff
+    this.app.get('/question', (req, res) => {
+      res.send('question route woohoo')
     })
 
-    this.app.get('/db', (req, res) => {
-      res.send('db route woohoo')
+    // Update this once responseRouter.js is created --> for dealing with student responses to questions
+    this.app.get('/response', (req, res) => {
+      res.send('response route woohoo')
     })
 
-    this.app.get('/model', (req, res) => {
-      res.send('model route woohoo')
+    // Update this once roomRouter.js is created --> for dealing with creating a room or whatever
+    this.app.get('/room', (req, res) => {
+      res.send('room route woohoo')
     })
 
     this.app.listen(this.port, () => {
