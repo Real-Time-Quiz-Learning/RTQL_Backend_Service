@@ -1,13 +1,25 @@
 // const express = require('express')
-import express  from 'express';
+import express from 'express';
+import cors from 'cors';
 
 import LoginRouter from './routes/loginRoute.js';
-import SignupRouter from './routes/signup.js';
+import SignupRouter from './routes/signupRoute.js';
 
+/**
+ * The server handles everything.
+ */
 class Server {
   constructor() {
     this.port = 3000;
     this.app = express();
+
+    this.corsOptions = {
+      optionSuccessStatus: 204,
+      origin: '*',
+      methods: 'GET,PUT,POST,PATCH,DELTE,OPTIONS'
+    };
+
+    this.app.use(cors(this.corsOptions));
 
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();

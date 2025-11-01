@@ -7,7 +7,7 @@ class DBService{
     static dbURL = "";
 
     static addNewUser(){
-
+        return "new user added :D";
     }
 
     static checkExistingUser(){
@@ -15,3 +15,5 @@ class DBService{
     }
 
 }
+
+export default DBService;

@@ -6,3 +6,5 @@ class AuthService{
     static authURL = ""; 
 
 }
+
+export default AuthService;
