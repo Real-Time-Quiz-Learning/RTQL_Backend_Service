@@ -1,5 +1,6 @@
 // const express = require('express')
 import express from 'express';
+import process from 'process';
 import cors from 'cors';
 
 import LoginRouter from './routes/loginRoute.js';
@@ -10,7 +11,7 @@ import SignupRouter from './routes/signupRoute.js';
  */
 class Server {
   constructor() {
-    this.port = 3000;
+    this.port = process.env.PORT;
     this.app = express();
 
     this.corsOptions = {
