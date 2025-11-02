@@ -24,7 +24,6 @@ class LoginRouter {
             .post(async (req, res) => {
                 const credentials = req.body;
 
-                console.log("AUTH LOGIN credentials: " + JSON.stringify(credentials));
 
                 if (!credentials.email || !credentials.pass) {
                     res.status(400);
@@ -45,11 +44,7 @@ class LoginRouter {
 
                     }
 
-                    console.log("LOGIN RESPonse: " + JSON.stringify(authLoginResponse));
-
                     const token = authLoginResponse.response.data.token;
-
-                    console.log("LOGIN TOKEN: " + token);
 
                     res.status(200);
                     res.json({

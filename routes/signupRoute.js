@@ -27,8 +27,6 @@ class SignupRouter {
                 // Go through auth signup request
                 const authSignupResponse = await AuthService.signupUser(newUser);
 
-                console.log("authSignupResponse: " + JSON.stringify(authSignupResponse));
-
                 if (authSignupResponse.error){
                                         res.status(400);
                     res.json({
@@ -40,8 +38,6 @@ class SignupRouter {
 
                 // Get the auth token from the response
                 const token = authSignupResponse.response.data.token;
-
-                console.log("token: " + token);
 
                 // is this correct??
                 if (authSignupResponse.error) {

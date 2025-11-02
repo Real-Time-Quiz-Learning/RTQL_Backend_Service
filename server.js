@@ -28,7 +28,6 @@ class Server {
   }
 
   start() {
-    console.log("Server is started")
 
     this.app.get('/', (req, res) => {
       res.send('RTQL Backend Server woohoo')
@@ -54,7 +53,7 @@ class Server {
     })
 
     this.app.listen(this.port, () => {
-      console.log(`Example app listening on port ${this.port}`)
+      console.log(`RTQL Backend Server listening on port ${this.port}`)
     })
   }
 }

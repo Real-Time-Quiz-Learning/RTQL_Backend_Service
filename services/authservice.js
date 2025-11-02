@@ -18,7 +18,6 @@ class AuthService {
     static validateTokenErrorMsg = "Error validating token";
 
     static async signupUser(userJSON) {
-        console.log("AUTHSERVICE userJSON: " + JSON.stringify(userJSON));
         const errorMsg = {
             error: true,
             message: AuthService.signupErrorMsg
@@ -31,8 +30,6 @@ class AuthService {
                 },
                 body: JSON.stringify(userJSON)
             });
-
-            console.log("AUTHSERVICE response: " + response);
 
             if (!response.ok) {
                 return errorMsg;
@@ -48,7 +45,6 @@ class AuthService {
     }
 
     static async loginUser(userJSON){
-        console.log(JSON.stringify(userJSON));
             const errorMsg = {
             error: true,
             message: AuthService.loginErrorMsg
@@ -92,8 +88,6 @@ class AuthService {
                 }
             });
 
-            console.log("AUTHSERVICE VALIDATETOKEN response: " + JSON.stringify(response));
-
             if (!response.ok) {
                 return errorMsg;
             }
@@ -103,7 +97,6 @@ class AuthService {
             return result;
 
         } catch (error) {
-            console.log("ERROR: " + error);
             return errorMsg;
         }
     }
