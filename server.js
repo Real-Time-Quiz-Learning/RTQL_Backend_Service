@@ -12,6 +12,8 @@ import SignupRouter from './routes/signupRoute.js';
 class Server {
   constructor() {
     this.port = process.env.PORT;
+    this.dbEnd = process.env.DB_END;
+    this.authEnd = process.env.AUTH_END;
     this.app = express();
 
     this.corsOptions = {

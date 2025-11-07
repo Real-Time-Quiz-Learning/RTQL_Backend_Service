@@ -1,3 +1,5 @@
+import process from 'process';
+
 const POST = "POST";
 
 /**
@@ -6,9 +8,12 @@ const POST = "POST";
 class DBService {
 
 
-    static dbEndpoint = "http://64.181.233.131:6767/";
+    // static dbEndpoint = "http://64.181.233.131:6767/";
+    static dbEndpoint = process.env.DB_END;
 
     static async addNewUser(userJSON) {
+
+        console.log(DBService.dbEndpoint);
 
         const errorMsg = {
             error: true,

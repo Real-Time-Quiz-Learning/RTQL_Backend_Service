@@ -3,7 +3,8 @@
  */
 class AuthService {
 
-    static authEndpoint = "http://64.181.233.131:7766/";
+    // static authEndpoint = "http://64.181.233.131:7766/";
+    static authEndpoint = process.env.AUTH_END;
 
     static signupRoute = "auth/signup";
 
