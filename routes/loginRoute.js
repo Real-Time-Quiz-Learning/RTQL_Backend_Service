@@ -49,7 +49,8 @@ class LoginRouter {
                     res.status(200);
                     res.json({
                         message: "Login success!",
-                        token: token
+                        token: token,
+                        email: credentials.email
                     })
                 }
             })
