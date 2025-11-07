@@ -1,3 +1,5 @@
+import process from 'process';
+
 /**
  * The AuthService class has the methods to communicate with the Authentication API.
  */
@@ -6,11 +8,11 @@ class AuthService {
     // static authEndpoint = "http://64.181.233.131:7766/";
     static authEndpoint = process.env.AUTH_END;
 
-    static signupRoute = "auth/signup";
+    static signupRoute = "/auth/signup";
 
-    static loginRoute = "auth/login";
+    static loginRoute = "/auth/login";
 
-    static validateTokenRoute = "token/validate";
+    static validateTokenRoute = "/token/validate";
 
     static signupErrorMsg = "Error adding new user";
 
@@ -23,6 +25,8 @@ class AuthService {
             error: true,
             message: AuthService.signupErrorMsg
         }
+        console.log(AuthService.authEndpoint);
+
         try {
             const response = await fetch(AuthService.authEndpoint + AuthService.signupRoute, {
                 method: "POST",
