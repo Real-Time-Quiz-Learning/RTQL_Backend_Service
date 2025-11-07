@@ -31,9 +31,7 @@ class Server {
 
   start() {
 
-    this.app.get('/', (req, res) => {
-      res.send('RTQL Backend Server woohoo')
-    })
+    this.app.use(express.static(`${process.cwd()}/public`));
 
     this.app.use('/login', this.loginRouter.getRouter())
 
