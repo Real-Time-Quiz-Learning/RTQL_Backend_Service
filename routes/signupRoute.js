@@ -49,7 +49,8 @@ class SignupRouter {
                     res.status(200);
                     res.json({
                         message: authSignupResponse.message,
-                        token: token
+                        token: token,
+                        email: req.body.email
                     })
                 }
             })
