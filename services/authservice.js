@@ -85,15 +85,16 @@ class AuthService {
         const bearerString = `Bearer ${token}`
 
         try {
-            const response = await fetch(AuthService.authEndpoint + AuthService.loginRoute, {
+            const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authentication": bearerString
+                    "Authorization": bearerString
                 }
             });
 
             if (!response.ok) {
+                console.log(response);
                 return errorMsg;
             }
 

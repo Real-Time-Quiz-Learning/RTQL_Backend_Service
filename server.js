@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import LoginRouter from './routes/loginRoute.js';
 import SignupRouter from './routes/signupRoute.js';
+import QuestionRouter from './routes/questionRoute.js';
 
 /**
  * The server handles everything.
@@ -26,6 +27,7 @@ class Server {
 
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();
+    this.questionRouter = new QuestionRouter();
 
   }
 
@@ -33,14 +35,11 @@ class Server {
 
     this.app.use(express.static(`${process.cwd()}/public`));
 
-    this.app.use('/login', this.loginRouter.getRouter())
+    this.app.use('/login', this.loginRouter.getRouter());
 
-    this.app.use('/signup', this.signupRouter.getRouter())
+    this.app.use('/signup', this.signupRouter.getRouter());
 
-    // Update this once questionRouter.js is created --> for dealing with question stuff
-    this.app.get('/question', (req, res) => {
-      res.send('question route woohoo')
-    })
+    this.app.use('/question', this.questionRouter.getRouter());
 
     // Update this once responseRouter.js is created --> for dealing with student responses to questions
     this.app.get('/response', (req, res) => {
