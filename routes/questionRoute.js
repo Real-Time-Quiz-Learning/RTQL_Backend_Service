@@ -82,7 +82,7 @@ class QuestionRouter {
                 const questionID = dbResponseQ.response.data.insertId;
 
                 console.log("QUESTIONID " + questionID);
-                console.log("ANSWER COUNT " + answers.Count);
+                console.log("ANSWER COUNT " + answers.length);
 
                 for (let i = 0; i < answers.length; i++) {
                     let dbResponseA = await DBService.saveAnswer(answers[i], questionID, i == correct);
