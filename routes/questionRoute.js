@@ -104,35 +104,13 @@ class QuestionRouter {
 
         // NOT IMPLEMENTED WAITING TO SET UP DB
         this.router.route('/getSaved/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION GET SAVED route!')
-            })
             .get(async (req, res) => {
 
-
-                const user = req.body.user;
-
-                // validate the token
-                const token = req.body.token;
-                const validUser = await AuthService.validateToken(token);
-                console.log("HERE WE ARE!!!");
-
-                if (validUser.error) {
-                    res.status(400);
-                    res.json({
-                        message: validUser.message
-                    })
-                    return;
-                }
-
-                console.log("user is validated. phew!");
-
-                // get user ID from token response
-                const userID = validUser.response.id;
+                const userID = req.validUser.response.id;
                 console.log("The userID is: " + userID);
 
                 // send ID to db to get all questions
-                const dbResponse = await DBServiceService.getAllQuestions(userID);
+                const dbResponse = await DBService.getAllQuestions(userID);
 
                 // TO DO: finish this part
 
@@ -146,7 +124,8 @@ class QuestionRouter {
 
                 res.status(200);
                 res.json({
-                    message: "Just saved some great questions!"
+                    message: "Here are some great questions!",
+                    questions: dbResponse.response.data
                 })
             }
             );
