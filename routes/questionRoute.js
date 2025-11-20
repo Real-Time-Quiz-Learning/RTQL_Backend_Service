@@ -57,7 +57,7 @@ class QuestionRouter {
 
                 // decompose the request (hope everything is there!)
                 const question = req.body.question;
-                const answers = req.body.answers;
+                const answers = req.body.options;
                 const correct = req.body.correct;
 
                 // get user ID from token response
