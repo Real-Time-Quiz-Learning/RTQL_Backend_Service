@@ -49,8 +49,8 @@ class AuthService {
         }
     }
 
-    static async loginUser(userJSON){
-            const errorMsg = {
+    static async loginUser(userJSON) {
+        const errorMsg = {
             error: true,
             message: AuthService.loginErrorMsg
         }
@@ -76,35 +76,56 @@ class AuthService {
         }
     }
 
-    static async validateToken(token){
-            const errorMsg = {
+    // static async validateToken(token){
+    //         const errorMsg = {
+    //         error: true,
+    //         message: AuthService.validateTokenErrorMsg
+    //     }
+
+    //     const bearerString = `Bearer ${token}`
+
+    //     try {
+    //         const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 "Authorization": bearerString
+    //             }
+    //         });
+
+    //         if (!response.ok) {
+    //             console.log(response);
+    //             return errorMsg;
+    //         }
+
+    //         const result = await response.json();
+
+    //         return result;
+
+    //     } catch (error) {
+    //         return errorMsg;
+    //     }
+    // }
+
+    static async validateToken(req, res, next) {
+
+        const errorMsg = {
             error: true,
             message: AuthService.validateTokenErrorMsg
         }
+        const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
+            method: "GET",
+            headers: req.headers
+        });
 
-        const bearerString = `Bearer ${token}`
-
-        try {
-            const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": bearerString
-                }
-            });
-
-            if (!response.ok) {
-                console.log(response);
-                return errorMsg;
-            }
-
-            const result = await response.json();
-
-            return result;
-
-        } catch (error) {
-            return errorMsg;
+        if (!response.ok) {
+            console.log(response);
+            throw new Error("invalid token");
         }
+
+        req.validUser = await response.json();
+
+        next();
     }
 
 }

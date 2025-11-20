@@ -10,6 +10,7 @@ class QuestionRouter {
     constructor() {
         this.router = express.Router();
         this.router.use(express.json());
+        this.router.use(AuthService.validateToken);
     }
 
     getRouter() {
@@ -27,21 +28,6 @@ class QuestionRouter {
                 console.log("at the question route yay");
 
                 const questionPrompt = req.body;
-
-                // Validate the user!!!
-                const token = questionPrompt.token;
-                const validUser = await AuthService.validateToken(token);
-                console.log("HERE WE ARE!!!");
-
-                if (validUser.error) {
-                    res.status(400);
-                    res.json({
-                        message: validUser.message
-                    })
-                    return;
-                }
-
-                console.log("user is validated. phew!");
 
                 const modelResponse = await ModelService.sendQuestion(questionPrompt);
 
@@ -61,7 +47,6 @@ class QuestionRouter {
             }
             );
 
-        // NOT IMPLEMENTED WAITING TO SET UP DB SERVICE
         this.router.route('/save/')
             .get((req, res) => {
                 res.send('Hello World at the QUESTION SAVE route!')
@@ -71,26 +56,13 @@ class QuestionRouter {
                 console.log("at the question route yay");
 
                 // decompose the request (hope everything is there!)
-                const token = req.body.token;
                 const question = req.body.question;
                 const answers = req.body.answers;
                 const correct = req.body.correct;
 
-                // Validate the user!!!
-                const validUser = await AuthService.validateToken(token);
-                console.log("HERE WE ARE!!!");
-                if (validUser.error) {
-                    res.status(400);
-                    res.json({
-                        message: validUser.message
-                    })
-                    return;
-                }
-
-                console.log("user is validated. phew!");
-
                 // get user ID from token response
-                const userID = validUser.response.id;
+                console.log("VALID USER: " + req.validUser);
+                const userID = req.validUser.response.id;
                 console.log("The userID is: " + userID);
 
                 // save response
@@ -135,7 +107,7 @@ class QuestionRouter {
             .get((req, res) => {
                 res.send('Hello World at the QUESTION GET SAVED route!')
             })
-            .post(async (req, res) => {
+            .get(async (req, res) => {
 
 
                 const user = req.body.user;

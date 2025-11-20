@@ -2,9 +2,12 @@ import process from 'process';
 
 const POST = "POST";
 
+const GET = "GET";
+
 const dbQuestionEndpoint = "/question";
 
 const dbAnswerEndpoint = "/response";
+
 
 /**
  * The DBService class has the methods needed to communicate with the database API.
@@ -77,20 +80,14 @@ class DBService {
         }
     }
 
-    static async getAllQuestions(userJSON) {
+    static async getAllQuestions(userID) {
         const errorMsg = {
             error: true,
             message: "Error adding new user"
         }
 
         try {
-            const response = await fetch(DBService.dbEndpoint, {
-                method: POST,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(userJSON)
-            });
+            const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint + "?pid=" + userID);
 
             if (!response.ok) {
                 return errorMsg;
