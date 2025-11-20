@@ -130,6 +130,37 @@ class QuestionRouter {
             }
             );
 
+
+             // NOT IMPLEMENTED WAITING TO SET UP DB
+        this.router.route('/getAnswers')
+            .get(async (req, res) => {
+
+                const qid = req.query.qid;
+
+                const userID = req.validUser.response.id;
+                console.log("The userID is: " + userID);
+
+                // send ID to db to get all questions
+                const dbResponse = await DBService.getAnswers(qid);
+
+                // TO DO: finish this part
+
+                if (dbResponse.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponse.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Here are some great answers!",
+                    answers: dbResponse.response.data
+                })
+            }
+            );
+
     }
 }
 

@@ -104,6 +104,30 @@ class DBService {
 
     }
 
+        static async getAnswers(qid) {
+        const errorMsg = {
+            error: true,
+            message: "Error adding new user"
+        }
+
+        try {
+            const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint + "?qid=" + qid);
+
+            if (!response.ok) {
+                return errorMsg;
+            }
+
+            const result = await response.json();
+
+            return result;
+
+        } catch (error) {
+
+        }
+
+
+    }
+
 
     static async saveAnswer(answer, questionID, correct) {
         const errorMsg = {
