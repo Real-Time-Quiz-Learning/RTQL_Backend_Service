@@ -34,11 +34,13 @@ class BackendServer {
 
     this.quizRoomService = new QuizRoomService();
 
+    // HTTP routes
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();
     this.questionRouter = new QuestionRouter();
 
-    this.teacherSocket = new TeacherSocket(this.io);
+    // Sockets
+    this.teacherSocket = new TeacherSocket(this.io, this.quizRoomService);
   }
 
   start() {
@@ -62,9 +64,8 @@ class BackendServer {
 
     // Register sockets
     this.io.on("connection", (socket) => {
-      // Teacher connections 
-      // WO: seperate connection type, namespace????
       this.teacherSocket.registerHandlers(socket);
+      // this.studentSocket.registerHandlers(socket);
     });
 
     this.server.listen(this.port, () => {
