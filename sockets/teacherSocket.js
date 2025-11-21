@@ -20,22 +20,33 @@ export class TeacherSocket {
         let roomId = this.socket.id
 
         this.socket.join(roomId);
+        this.quizRoomService.createAQuizRoom(this.socket.id);
         this.io.emit('quizRoomCreated', { teacher: user, roomId: roomId });
+
+        // USE THE SERVICE TO DEFINE A ROOM FOR THIS CONNECTION
     }
 
     quizRoomJoin(roomId, nickname) {
         this.socket.join(roomId);
         this.io.to(roomId).emit('userJoined', nickname);
+
+        // USE THE SERVICE TO IDENTIFY THE ROOM CREATED FOR THIS CONNECTION
+        this.quizRoomService.addClientToQuizRoom(roomId, this.socket.id);
     }
 
     quizRoomLeave(roomId, nickname) {
         this.socket.leave(roomId);
         this.io.to(roomId).emit('userLeaves', nickname);
+
+        // USE THE SERVICE TO ASSOCIATE THE CLIENT CONNECTION WITH THE ROOM CONNECTION
+        // FOR FUTURE MESSAGES THAT IMPACT THE STATE OF THE OVERALL GAME
     }
 
     postQuizQuestion(roomId, question) {
         console.log(`${roomId}: ${JSON.stringify(question)}`);
         this.io.to(roomId).emit('questionPosted', question);
+
+        // USE THE SERVICE TO TRACK QUESTION (WILL BE USED FOR STUDENTS TO VERIFY THEIR RESPONSES ARE CORRECT)
     }
 
     postQuizAnswer(roomId, questionId, response, nickname) {
@@ -44,6 +55,8 @@ export class TeacherSocket {
             response: response,
             responder: nickname
         });
+
+        // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
     }
 
     registerHandlers(socket) {
