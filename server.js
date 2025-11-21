@@ -30,7 +30,7 @@ class BackendServer {
     };
     this.app.use(cors(this.corsOptions));
 
-    this.quizRoomService = new QuizRoomService(this.io);
+    this.quizRoomService = new QuizRoomService();
 
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();
@@ -54,24 +54,32 @@ class BackendServer {
     // Update this once roomRouter.js is created --> for dealing with creating a room or whatever
     this.app.get('/room', (req, res) => {
       res.send('room route woohoo')
-    })
-
-    // SOCKET STUFF
-
-    this.io.on('connection', (socket) => {
-      console.log('client connected');
-
-      socket.on('incoming', (user, msg) => {
-        this.io.emit('outgoing', msg);
-      });
-
-      socket.on('')
-
-      socket.on('disconnect', (user, message) => {
-        console.log('client disconnected');
-        console.log(`client ${}`);
-      });
     });
+
+    // Teacher connections 
+    // WO: seperate connection type, namespace????
+    this.io.on('connection', (socket) => {
+        console.log('client connected');
+
+        // Echo
+        socket.on('incoming', (msg) => {
+          this.io.emit('outgoing', msg);
+        });
+
+        // Quiz room initialize
+        socket.on('quizRoomCreate', (user) => {
+          // WO: this socket should likely use some form of middleware to authenticate the user before actually doing any sort of room creation
+          this.io.emit(`${user}, ${socket.id}`);
+        });
+
+        socket.on('disconnect', (user, message) => {
+            console.log('client disconnected');
+            console.log(`client ${user}`);
+        });
+    });
+
+    // Student connections
+    // WO: seperate connection type, namespace? for the student connections
 
     // START THE LEGENDARY BACKED SERVICE
 
