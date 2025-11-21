@@ -3,10 +3,12 @@ export class TeacherSocket {
         this.io = io;
         this.quizRoomService = quizRoomService;
 
-        this.b_incoming         = this.incoming.bind(this);
-        this.b_quizRoomCreate   = this.quizRoomCreate.bind(this);
-        this.b_quizRoomJoin     = this.quizRoomJoin.bind(this);
-        this.b_quizRoomLeave    = this.quizRoomLeave.bind(this);
+        this.b_incoming = this.incoming.bind(this);
+        this.b_quizRoomCreate = this.quizRoomCreate.bind(this);
+        this.b_quizRoomJoin = this.quizRoomJoin.bind(this);
+        this.b_quizRoomLeave = this.quizRoomLeave.bind(this);
+        this.b_quizRoomPostQuestion = this.postQuizQuestion.bind(this);
+        this.b_quizRoomPostQuestionAnswer = this.postQuizAnswer.bind(this);
     }
 
     incoming(message) {
@@ -27,19 +29,31 @@ export class TeacherSocket {
     }
 
     quizRoomLeave(roomId, nickname) {
-        this.socket.leave(roomtId);
+        this.socket.leave(roomId);
         this.io.to(roomId).emit('userLeaves', nickname);
     }
 
-    postQuizAnswer(roomId, questionId, responseId, nickname) {
+    postQuizQuestion(roomId, question) {
+        console.log(`${roomId}: ${JSON.stringify(question)}`);
+        this.io.to(roomId).emit('questionPosted', question);
+    }
+
+    postQuizAnswer(roomId, questionId, response, nickname) {
+        console.log(`${this.socket.id}, question-${questionId} response: ${response}`);
+        this.io.to(roomId).emit('responsePosted', {
+            response: response,
+            responder: nickname
+        });
     }
 
     registerHandlers(socket) {
         this.socket = socket;
 
-        socket.on('incoming',       this.b_incoming);
+        socket.on('incoming', this.b_incoming);
         socket.on('quizRoomCreate', this.b_quizRoomCreate);
         socket.on('quizRoomJoin', this.b_quizRoomJoin);
         socket.on('quizRoomLeave', this.b_quizRoomLeave);
+        socket.on('quizRoomPostQuestion', this.b_quizRoomPostQuestion);
+        socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
     }
 }
