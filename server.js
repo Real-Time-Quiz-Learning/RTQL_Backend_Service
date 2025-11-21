@@ -2,6 +2,10 @@
 import express from 'express';
 import process from 'process';
 import cors from 'cors';
+import { Server } from 'socket.io';
+import http from 'http';
+
+import { QuizRoomService } from './services/quizRoomService.js';
 
 import LoginRouter from './routes/loginRoute.js';
 import SignupRouter from './routes/signupRoute.js';
@@ -10,29 +14,30 @@ import QuestionRouter from './routes/questionRoute.js';
 /**
  * The server handles everything.
  */
-class Server {
+class BackendServer {
   constructor() {
     this.port = process.env.PORT;
     this.dbEnd = process.env.DB_END;
     this.authEnd = process.env.AUTH_END;
     this.app = express();
+    this.server = http.createServer(this.app);
+    this.io = new Server(this.server);
 
     this.corsOptions = {
       optionSuccessStatus: 204,
       origin: '*',
       methods: 'GET,PUT,POST,PATCH,DELTE,OPTIONS'
     };
-
     this.app.use(cors(this.corsOptions));
+
+    this.quizRoomService = new QuizRoomService(this.io);
 
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();
     this.questionRouter = new QuestionRouter();
-
   }
 
   start() {
-
     this.app.use(express.static(`${process.cwd()}/public`));
 
     this.app.use('/login', this.loginRouter.getRouter());
@@ -51,11 +56,30 @@ class Server {
       res.send('room route woohoo')
     })
 
-    this.app.listen(this.port, () => {
+    // SOCKET STUFF
+
+    this.io.on('connection', (socket) => {
+      console.log('client connected');
+
+      socket.on('incoming', (user, msg) => {
+        this.io.emit('outgoing', msg);
+      });
+
+      socket.on('')
+
+      socket.on('disconnect', (user, message) => {
+        console.log('client disconnected');
+        console.log(`client ${}`);
+      });
+    });
+
+    // START THE LEGENDARY BACKED SERVICE
+
+    this.server.listen(this.port, () => {
       console.log(`RTQL Backend Server listening on port ${this.port}`)
     })
   }
 }
 
-const server = new Server();
+const server = new BackendServer();
 server.start();
