@@ -28,35 +28,48 @@ export class TeacherSocket {
 
     quizRoomJoin(roomId, nickname) {
         this.socket.join(roomId);
-        this.io.to(roomId).emit('userJoined', nickname);
 
         // USE THE SERVICE TO IDENTIFY THE ROOM CREATED FOR THIS CONNECTION
-        this.quizRoomService.addClientToQuizRoom(roomId, this.socket.id);
+        let clientId = this.socket.id;
+
+        this.quizRoomService.addClientToQuizRoom(roomId, clientId, nickname);
+        console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
+        this.io.to(roomId).emit('userJoined', nickname);
     }
 
-    quizRoomLeave(roomId, nickname) {
+    quizRoomLeave(roomId) {
         this.socket.leave(roomId);
-        this.io.to(roomId).emit('userLeaves', nickname);
 
         // USE THE SERVICE TO ASSOCIATE THE CLIENT CONNECTION WITH THE ROOM CONNECTION
         // FOR FUTURE MESSAGES THAT IMPACT THE STATE OF THE OVERALL GAME
+        this.io.to(roomId).emit('userLeaves', nickname);
     }
 
     postQuizQuestion(roomId, question) {
-        console.log(`${roomId}: ${JSON.stringify(question)}`);
-        this.io.to(roomId).emit('questionPosted', question);
-
+        // console.log(`${roomId}: ${JSON.stringify(question)}`);
         // USE THE SERVICE TO TRACK QUESTION (WILL BE USED FOR STUDENTS TO VERIFY THEIR RESPONSES ARE CORRECT)
+        let addedQuestion = this.quizRoomService.addQuestion(roomId, question);
+        console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
+        this.io.to(roomId).emit('questionPosted', addedQuestion);
     }
 
-    postQuizAnswer(roomId, questionId, response, nickname) {
-        console.log(`${this.socket.id}, question-${questionId} response: ${response}`);
-        this.io.to(roomId).emit('responsePosted', {
-            response: response,
-            responder: nickname
-        });
+    /**
+     * ```json
+     * {
+     *      question: Integer,
+     *      response: Integer,
+     * }
+     * ```
+     * @param {*} roomId 
+     * @param {*} response 
+     */
+    postQuizAnswer(roomId, answer) {
+        console.log(`${this.socket.id}, answer: ${JSON.stringify(answer)}`);
 
         // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
+        this.quizRoomService.addQuestionResponse(roomId, answer);
+        console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
+        this.io.to(roomId).emit('responsePosted', answer);
     }
 
     registerHandlers(socket) {
