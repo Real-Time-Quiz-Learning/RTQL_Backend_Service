@@ -7,6 +7,8 @@ import http from 'http';
 
 import { QuizRoomService } from './services/quizRoomService.js';
 
+import { TeacherSocket } from './sockets/teacherSocket.js';
+
 import LoginRouter from './routes/loginRoute.js';
 import SignupRouter from './routes/signupRoute.js';
 import QuestionRouter from './routes/questionRoute.js';
@@ -35,6 +37,8 @@ class BackendServer {
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();
     this.questionRouter = new QuestionRouter();
+
+    this.teacherSocket = new TeacherSocket(this.io);
   }
 
   start() {
@@ -49,43 +53,23 @@ class BackendServer {
     // Update this once responseRouter.js is created --> for dealing with student responses to questions
     this.app.get('/response', (req, res) => {
       res.send('response route woohoo')
-    })
+    });
 
     // Update this once roomRouter.js is created --> for dealing with creating a room or whatever
     this.app.get('/room', (req, res) => {
       res.send('room route woohoo')
     });
 
-    // Teacher connections 
-    // WO: seperate connection type, namespace????
-    this.io.on('connection', (socket) => {
-        console.log('client connected');
-
-        // Echo
-        socket.on('incoming', (msg) => {
-          this.io.emit('outgoing', msg);
-        });
-
-        // Quiz room initialize
-        socket.on('quizRoomCreate', (user) => {
-          // WO: this socket should likely use some form of middleware to authenticate the user before actually doing any sort of room creation
-          this.io.emit(`${user}, ${socket.id}`);
-        });
-
-        socket.on('disconnect', (user, message) => {
-            console.log('client disconnected');
-            console.log(`client ${user}`);
-        });
+    // Register sockets
+    this.io.on("connection", (socket) => {
+      // Teacher connections 
+      // WO: seperate connection type, namespace????
+      this.teacherSocket.registerHandlers(socket);
     });
-
-    // Student connections
-    // WO: seperate connection type, namespace? for the student connections
-
-    // START THE LEGENDARY BACKED SERVICE
 
     this.server.listen(this.port, () => {
       console.log(`RTQL Backend Server listening on port ${this.port}`)
-    })
+    });
   }
 }
 
