@@ -27,10 +27,12 @@ export class QuizRoomService {
         if (!this.rooms[roomConnectionId]) {
             throw new Error('cannot connect to such a room as it does not actually exist');
         } else {
-            let snick = (nickname !== undefined)
+            let snick = (nickname.length !== 0)
                 ? nickname
                 : 'willy wonka';
             this.rooms[roomConnectionId].clients[clientConnectionId] = snick;       // assign the connected client but also their nickname
+
+            return snick;
         }
         // console.log(this.rooms[roomConnectionId]);
     }

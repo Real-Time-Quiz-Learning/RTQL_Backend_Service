@@ -18,18 +18,18 @@ export class StudentSocket {
 
     quizRoomJoin(roomId, nickname) {
         console.log(`${this.socket.id} joins ${roomId} w/ nickname ${nickname}`);
+        console.log(typeof nickname);
         try {
             this.socket.join(roomId);
 
             // USE THE SERVICE TO IDENTIFY THE ROOM CREATED FOR THIS CONNECTION
             let clientId = this.socket.id;
-
-            this.quizRoomService.addClientToQuizRoom(roomId, clientId, nickname);
+            let snick = this.quizRoomService.addClientToQuizRoom(roomId, clientId, nickname);
 
             console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
 
-            this.sio.to(roomId).emit('userJoined', nickname);
-            this.tio.to(roomId).emit('userJoined', nickname);
+            this.sio.to(roomId).emit('userJoined', snick);
+            this.tio.to(roomId).emit('userJoined', snick);
 
         } catch (err) {
             this.sio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
