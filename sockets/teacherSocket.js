@@ -29,9 +29,9 @@ export class TeacherSocket {
             // USE THE SERVICE TO DEFINE A ROOM FOR THIS CONNECTION
             this.quizRoomService.createAQuizRoom(this.socket.id);
 
-            this.tio.emit('quizRoomCreated', { teacher: user, roomId: roomId });
+            this.tio.to(this.socket.id).emit('quizRoomCreated', { teacher: user, roomId: roomId });
         } catch (err) {
-            this.tio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
@@ -46,7 +46,7 @@ export class TeacherSocket {
             this.sio.to(roomId).emit('questionPosted', addedQuestion);
 
         } catch (err) {
-            this.tio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
@@ -61,7 +61,7 @@ export class TeacherSocket {
             this.tio.to(roomId).emit('responsePosted', answer);
             this.sio.to(roomId).emit('responsePosted', answer);
         } catch (err) {
-            this.tio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 

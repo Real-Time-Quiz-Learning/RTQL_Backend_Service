@@ -1,6 +1,7 @@
 export class QuizRoomService {
     constructor() {
         this.rooms = {};
+        this.questions = 0;
     }
 
     // Should likely have more validation here
@@ -27,7 +28,7 @@ export class QuizRoomService {
         if (!this.rooms[roomConnectionId]) {
             throw new Error('cannot connect to such a room as it does not actually exist');
         } else {
-            let snick = (nickname.length !== 0)
+            let snick = (nickname !== '')
                 ? nickname
                 : 'willy wonka';
             this.rooms[roomConnectionId].clients[clientConnectionId] = snick;       // assign the connected client but also their nickname
@@ -44,6 +45,8 @@ export class QuizRoomService {
 
     // Add a question to a room
     addQuestion(roomConnectionId, question) {
+        this._validateRoomConnectionId(roomConnectionId);
+
         if (question.question === undefined)
             throw new Error('there is no question in this question');
         if (question.options === undefined)
@@ -54,6 +57,7 @@ export class QuizRoomService {
         console.log(`question: ${JSON.stringify(question)}`);
 
         question.answers = [];
+        question.id = this.questions++;
 
         this.rooms[roomConnectionId].questions.push(question);
 
@@ -62,19 +66,27 @@ export class QuizRoomService {
 
     // Add a new response to a question
     addQuestionResponse(roomConnectionId, answer) {
-        if (answer.question === undefined)
+        this._validateRoomConnectionId(roomConnectionId);
+
+        if (answer.questionId === undefined)
             throw new Error('there is no question for this response');
         if (answer.response === undefined)
             throw new Error('there is no guess for this question');
+        if (answer.clientId === undefined)
+            console.log('answer submitted for an undefined client');
 
         console.log(`repsonse: ${JSON.stringify(answer)}`);
 
-        let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
+        // let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
+        let respondingTo = this.rooms[roomConnectionId].questions
+            .filter(c => c.id === answer.questionId)[0];
 
-        console.log(respondingTo);
+        console.log(JSON.stringify(respondingTo));
 
         if (!respondingTo)
             throw new Error('the question which you are attempting to respond to does in fact not exist');
+
+        console.log(respondingTo);
 
         respondingTo.answers.push(answer);
     }

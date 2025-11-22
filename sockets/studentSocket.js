@@ -32,7 +32,7 @@ export class StudentSocket {
             this.tio.to(roomId).emit('userJoined', snick);
 
         } catch (err) {
-            this.sio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.sio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
@@ -45,7 +45,7 @@ export class StudentSocket {
             this.sio.to(roomId).emit('userLeaves', nickname);
             this.tio.to(roomId).emit('userLeaves', nickname);
         } catch (err) {
-            this.sio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.sio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
@@ -53,6 +53,7 @@ export class StudentSocket {
         console.log(`${this.socket.id}, answer: ${JSON.stringify(answer)}`);
         try {
             // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
+            answer.clientId = this.socket.id;
             this.quizRoomService.addQuestionResponse(roomId, answer);
 
             console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
@@ -61,7 +62,7 @@ export class StudentSocket {
             this.sio.to(roomId).emit('responsePosted', answer);
 
         } catch (err) {
-            this.sio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.sio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
