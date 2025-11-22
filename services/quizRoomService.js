@@ -16,11 +16,59 @@ export class QuizRoomService {
 
         this.rooms[roomConnectionId].clients = {};
         this.rooms[roomConnectionId].questions = [];
+
+        console.log(JSON.stringify(this.rooms));
+    }
+
+    // Should be about this simple
+    deleteAQuizRoom(roomConnectionId) {
+        delete this.rooms[roomConnectionId];
+
+        console.log(JSON.stringify(this.rooms));
     }
 
     // Retrieves a specific quiz room
     getQuizRoom(roomConnectionId) {
         return this.rooms[roomConnectionId];
+    }
+
+    /**
+     * 
+     */
+    getQuizRoomStats(roomConnectionId) {
+        this._validateRoomConnectionId(roomConnectionId);
+
+        console.log(this.rooms[roomConnectionId]);
+        console.log(this.rooms[roomConnectionId].questions);
+
+        const quizRoom = this.rooms[roomConnectionId];
+        let correctAnswers = 0;
+        let totalAnswers = 0;
+        
+        for (const question of quizRoom.questions) {
+            let qCorrectAnswers = 0;
+            let qTotalAnswers = 0;
+
+            for (const answer of question.answers) {
+                if (question.correct === answer.response) {
+                    correctAnswers++;
+                    qCorrectAnswers++;
+                }
+                totalAnswers++;
+                qTotalAnswers++;
+            }
+
+            question.correctAnswers = qCorrectAnswers;
+            question.totalAnswers = qTotalAnswers;
+        }
+        
+        quizRoom.correctAnswers = correctAnswers;
+        quizRoom.totalAnswers = totalAnswers;
+        quizRoom.totalClients = Object.entries(quizRoom.clients).length;
+
+        console.log(quizRoom);
+
+        return quizRoom;
     }
 
     // Associate a client connection with the quiz room

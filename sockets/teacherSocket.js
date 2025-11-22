@@ -13,6 +13,7 @@ export class TeacherSocket {
         this.b_quizRoomPostQuestion = this.postQuizQuestion.bind(this);
         this.b_quizRoomPostQuestionAnswer = this.postQuizAnswer.bind(this);
         this.b_quizRoomMakeQuestionInactive = this.makeQuizAnswerInactive.bind(this);
+        this.b_quizRoomDestroy = this.quizRoomDestroy.bind(this);
     }
 
     incoming(message) {
@@ -22,15 +23,31 @@ export class TeacherSocket {
     quizRoomCreate(user) {
         console.log(`creating a new quiz room: ${this.socket.id}`);
         try {
-            // WO: this socket should likely use some form of middleware to authenticate the user before actually doing any sort of room creation
             let roomId = this.socket.id;
 
             this.socket.join(roomId);
-
-            // USE THE SERVICE TO DEFINE A ROOM FOR THIS CONNECTION
             this.quizRoomService.createAQuizRoom(this.socket.id);
-
             this.tio.to(this.socket.id).emit('quizRoomCreated', { teacher: user, roomId: roomId });
+
+        } catch (err) {
+            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+        }
+    }
+
+    quizRoomDestroy(user) {
+        console.log(`destroying the quiz room ${this.socket.id}`);
+        try {
+            let roomId = this.socket.id;
+            let quizStats = this.quizRoomService.getQuizRoomStats(roomId);
+
+            console.log(JSON.stringify(quizStats));
+
+            this.tio.to(roomId).emit('quizStats', quizStats);
+            this.sio.to(roomId).emit('quizStats', quizStats);
+
+            // Initiate the teardown
+            // this.quizRoomService.deleteAQuizRoom(roomId);
+            console.log('WE HAVE INITIATED THE TEARDOWN IT IS ALL OVER NOW 🔥🔥🧨🧨💥💥🧨💣💣💣🧨💥🔥');
 
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
@@ -55,7 +72,6 @@ export class TeacherSocket {
     postQuizAnswer(roomId, answer) {
         console.log(`${this.socket.id}, answer: ${JSON.stringify(answer)}`);
         try {
-            // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
             this.quizRoomService.addQuestionResponse(roomId, answer);
 
             console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
@@ -76,6 +92,13 @@ export class TeacherSocket {
             console.log(JSON.stringify(question));
 
             this.tio.to(roomId).emit('questionRemoved', question);
+
+            // Bro was correct?
+            for(let answer of question.answers) {
+                let correct = question.correct === answer.response;
+                this.sio.to(answer.clientId).emit('questionClosed', correct);
+            }
+
             this.sio.to(roomId).emit('questionRemoved', question);
 
         } catch (err) {
@@ -91,5 +114,6 @@ export class TeacherSocket {
         socket.on('quizRoomPostQuestion', this.b_quizRoomPostQuestion);
         socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
         socket.on('quizRoomQuestionInactive', this.b_quizRoomMakeQuestionInactive);
+        socket.on('quizRoomDestroy', this.b_quizRoomDestroy);
     }
 }
