@@ -149,7 +149,7 @@ class AuthService {
 
         if (!response.ok) {
             console.log(response);
-            throw new Error("invalid token");
+            next(new Error("invalid token"));
         }
 
         next();
