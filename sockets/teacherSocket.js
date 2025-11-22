@@ -12,6 +12,7 @@ export class TeacherSocket {
         this.b_quizRoomCreate = this.quizRoomCreate.bind(this);
         this.b_quizRoomPostQuestion = this.postQuizQuestion.bind(this);
         this.b_quizRoomPostQuestionAnswer = this.postQuizAnswer.bind(this);
+        this.b_quizRoomMakeQuestionInactive = this.makeQuizAnswerInactive.bind(this);
     }
 
     incoming(message) {
@@ -30,6 +31,7 @@ export class TeacherSocket {
             this.quizRoomService.createAQuizRoom(this.socket.id);
 
             this.tio.to(this.socket.id).emit('quizRoomCreated', { teacher: user, roomId: roomId });
+
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
@@ -60,6 +62,21 @@ export class TeacherSocket {
 
             this.tio.to(roomId).emit('responsePosted', answer);
             this.sio.to(roomId).emit('responsePosted', answer);
+
+        } catch (err) {
+            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+        }
+    }
+
+    makeQuizAnswerInactive(roomId, questionId) {
+        console.log(`${this.socket.id}, roomId: ${roomId}, questionId: ${questionId}`);
+        try {
+            let question = this.quizRoomService.makeAQuestionInactive(roomId, questionId);
+
+            console.log(JSON.stringify(question));
+
+            this.tio.to(roomId).emit('questionRemoved', question);
+
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
@@ -72,5 +89,6 @@ export class TeacherSocket {
         socket.on('quizRoomCreate', this.b_quizRoomCreate);
         socket.on('quizRoomPostQuestion', this.b_quizRoomPostQuestion);
         socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
+        socket.on('quizRoomQuestionInactive', this.b_quizRoomMakeQuestionInactive);
     }
 }

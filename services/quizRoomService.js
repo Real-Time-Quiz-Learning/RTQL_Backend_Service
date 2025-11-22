@@ -57,9 +57,28 @@ export class QuizRoomService {
         console.log(`question: ${JSON.stringify(question)}`);
 
         question.answers = [];
+        question.active = true;
         question.id = this.questions++;
 
         this.rooms[roomConnectionId].questions.push(question);
+
+        return question;
+    }
+
+    // Make a question in the room inactive
+    makeAQuestionInactive(roomConnectionId, questionId) {
+        this._validateRoomConnectionId(roomConnectionId);
+
+        console.log(`${roomConnectionId}, ${questionId}`);
+        console.log(JSON.stringify(this.rooms[roomConnectionId].questions));
+
+        let question = this.rooms[roomConnectionId].questions
+            .filter(c => c.id === Number.parseInt(questionId))[0];
+
+        if (!question)
+            throw new Error('could not make a question inactive because it does not exist');
+
+        question.active = false;
 
         return question;
     }
@@ -85,6 +104,8 @@ export class QuizRoomService {
 
         if (!respondingTo)
             throw new Error('the question which you are attempting to respond to does in fact not exist');
+        if (!respondingTo.active)
+            throw new Error('the question which you are attempting to respond to is in fact no longer active');
 
         console.log(respondingTo);
 
