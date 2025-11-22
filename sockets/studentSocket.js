@@ -1,6 +1,7 @@
 export class StudentSocket {
-    constructor(io, quizRoomService) {
-        this.io = io;
+    constructor(sio, tio, quizRoomService) {
+        this.sio = sio;
+        this.tio = tio;
         this.quizRoomService = quizRoomService;
 
         this.b_incoming = this.incoming.bind(this);
@@ -21,15 +22,17 @@ export class StudentSocket {
 
         this.quizRoomService.addClientToQuizRoom(roomId, clientId, nickname);
         console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
-        this.io.to(roomId).emit('userJoined', nickname);
+
+        this.sio.to(roomId).emit('userJoined', nickname);
+        this.tio.to(roomId).emit('userJoined', nickname);
     }
 
     quizRoomLeave(roomId) {
         this.socket.leave(roomId);
 
-        // USE THE SERVICE TO ASSOCIATE THE CLIENT CONNECTION WITH THE ROOM CONNECTION
-        // FOR FUTURE MESSAGES THAT IMPACT THE STATE OF THE OVERALL GAME
-        this.io.to(roomId).emit('userLeaves', nickname);
+        // USE THE SERVICE TO IDENTIFY THE 
+        this.sio.to(roomId).emit('userLeaves', nickname);
+        this.tio.to(roomId).emit('userLeaves', nickname);
     }
 
     /**
@@ -48,7 +51,9 @@ export class StudentSocket {
         // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
         this.quizRoomService.addQuestionResponse(roomId, answer);
         console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
-        this.io.to(roomId).emit('responsePosted', answer);
+
+        this.tio.to(roomId).emit('responsePosted', answer);
+        this.sio.to(roomId).emit('responsePosted', answer);
     }
 
     registerHandlers(socket) {

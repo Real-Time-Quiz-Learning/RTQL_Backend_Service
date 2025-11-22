@@ -9,6 +9,7 @@ import { QuizRoomService } from './services/quizRoomService.js';
 import AuthService from './services/authservice.js';
 
 import { TeacherSocket } from './sockets/teacherSocket.js';
+import { StudentSocket } from './sockets/studentSocket.js';
 
 import LoginRouter from './routes/loginRoute.js';
 import SignupRouter from './routes/signupRoute.js';
@@ -18,6 +19,9 @@ import QuestionRouter from './routes/questionRoute.js';
  * The server handles everything.
  */
 class BackendServer {
+  static teacherSocketNamespace = '/teacher';
+  static studentSocketNamespace = '/student';
+
   constructor() {
     this.port = process.env.PORT;
     this.dbEnd = process.env.DB_END;
@@ -35,13 +39,18 @@ class BackendServer {
 
     this.quizRoomService = new QuizRoomService();
 
+    // Socket namespaces
+    this.teacher = this.io.of(BackendServer.teacherSocketNamespace);
+    this.student = this.io.of(BackendServer.studentSocketNamespace);
+
     // HTTP routes
     this.loginRouter = new LoginRouter();
     this.signupRouter = new SignupRouter();
     this.questionRouter = new QuestionRouter();
 
-    // Sockets
-    this.teacherSocket = new TeacherSocket(this.io, this.quizRoomService);
+    // Sockets handlers
+    this.teacherSocket = new TeacherSocket(this.teacher, this.student, this.quizRoomService);
+    this.studentSocket = new StudentSocket(this.student, this.teacher, this.quizRoomService);
   }
 
   start() {
@@ -64,10 +73,13 @@ class BackendServer {
     });
 
     // Register sockets
-    this.io.use(AuthService.validateToken);
-    this.io.on("connection", (socket) => {
+    this.teacher.use(AuthService.validateToken);
+    this.teacher.on("connection", (socket) => {
       this.teacherSocket.registerHandlers(socket);
-      // this.studentSocket.registerHandlers(socket);
+    });
+
+    this.student.on("connection", (socket) => {
+      this.studentSocket.registerHandlers(socket);
     });
 
     this.server.listen(this.port, () => {
