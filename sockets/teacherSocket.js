@@ -76,6 +76,7 @@ export class TeacherSocket {
             console.log(JSON.stringify(question));
 
             this.tio.to(roomId).emit('questionRemoved', question);
+            this.sio.to(roomId).emit('questionRemoved', question);
 
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
