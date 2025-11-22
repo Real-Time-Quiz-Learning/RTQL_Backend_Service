@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 
 import { QuizRoomService } from './services/quizRoomService.js';
+import AuthService from './services/authservice.js';
 
 import { TeacherSocket } from './sockets/teacherSocket.js';
 
@@ -63,6 +64,7 @@ class BackendServer {
     });
 
     // Register sockets
+    this.io.use(AuthService.validateToken);
     this.io.on("connection", (socket) => {
       this.teacherSocket.registerHandlers(socket);
       // this.studentSocket.registerHandlers(socket);

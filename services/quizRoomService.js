@@ -75,8 +75,6 @@ export class QuizRoomService {
             throw new Error('the question which you are attempting to respond to does in fact not exist');
 
         respondingTo.answers.push(answer);
-
-
     }
     
     // Remove a question from a room

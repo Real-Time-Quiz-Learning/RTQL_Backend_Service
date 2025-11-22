@@ -105,8 +105,9 @@ class AuthService {
     //     } catch (error) {
     //         return errorMsg;
     //     }
-    // }
+    // 
 
+    // express middleware function to check that the user is authenticated
     static async validateToken(req, res, next) {
 
         const errorMsg = {
@@ -128,6 +129,31 @@ class AuthService {
         next();
     }
 
+    // socket.io middleware function to check that the user is authenticated
+    static async validateToken(socket, next) {
+        const errorMsg = {
+            error: true,
+            message: AuthService.validateTokenErrorMsg
+        }
+
+        console.log(socket.handshake.headers);
+        if (!socket.handshake.headers['authorization'])
+            throw new Error('bro you need authorization');
+
+        const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
+            method: "GET",
+            headers: {
+                'authorization': socket.handshake.headers['authorization']
+            }
+        });
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error("invalid token");
+        }
+
+        next();
+    }
 }
 
 export default AuthService;
