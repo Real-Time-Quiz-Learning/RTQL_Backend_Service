@@ -1,4 +1,8 @@
+import { RtqlMessage } from '../models/message.js';
+
 export class TeacherSocket {
+    static questionPostError = 'failed to create question';
+
     constructor(tio, sio, quizRoomService) {
         this.tio = tio;
         this.sio = sio;
@@ -15,48 +19,50 @@ export class TeacherSocket {
     }
 
     quizRoomCreate(user) {
-        // WO: this socket should likely use some form of middleware to authenticate the user before actually doing any sort of room creation
-        let roomId = this.socket.id;
-        console.log('we are connected');
+        console.log(`creating a new quiz room: ${this.socket.id}`);
+        try {
+            // WO: this socket should likely use some form of middleware to authenticate the user before actually doing any sort of room creation
+            let roomId = this.socket.id;
 
-        this.socket.join(roomId);
+            this.socket.join(roomId);
 
-        // USE THE SERVICE TO DEFINE A ROOM FOR THIS CONNECTION
-        this.quizRoomService.createAQuizRoom(this.socket.id);
+            // USE THE SERVICE TO DEFINE A ROOM FOR THIS CONNECTION
+            this.quizRoomService.createAQuizRoom(this.socket.id);
 
-        this.tio.emit('quizRoomCreated', { teacher: user, roomId: roomId });
+            this.tio.emit('quizRoomCreated', { teacher: user, roomId: roomId });
+        } catch (err) {
+            this.tio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+        }
     }
 
     postQuizQuestion(roomId, question) {
-        // console.log(`${roomId}: ${JSON.stringify(question)}`);
-        // USE THE SERVICE TO TRACK QUESTION (WILL BE USED FOR STUDENTS TO VERIFY THEIR RESPONSES ARE CORRECT)
-        let addedQuestion = this.quizRoomService.addQuestion(roomId, question);
+        console.log(`${roomId}: ${JSON.stringify(question)}`);
+        try {
+            let addedQuestion = this.quizRoomService.addQuestion(roomId, question);
 
-        console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
+            console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
 
-        this.tio.to(roomId).emit('questionPosted', addedQuestion);
-        this.sio.to(roomId).emit('questionPosted', addedQuestion);
+            this.tio.to(roomId).emit('questionPosted', addedQuestion);
+            this.sio.to(roomId).emit('questionPosted', addedQuestion);
+
+        } catch (err) {
+            this.tio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+        }
     }
 
-    /**
-     * ```json
-     * {
-     *      question: Integer,
-     *      response: Integer,
-     * }
-     * ```
-     * @param {*} roomId 
-     * @param {*} response 
-     */
     postQuizAnswer(roomId, answer) {
         console.log(`${this.socket.id}, answer: ${JSON.stringify(answer)}`);
+        try {
+            // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
+            this.quizRoomService.addQuestionResponse(roomId, answer);
 
-        // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
-        this.quizRoomService.addQuestionResponse(roomId, answer);
-        console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
+            console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
 
-        this.tio.to(roomId).emit('responsePosted', answer);
-        this.sio.to(roomId).emit('responsePosted', answer);
+            this.tio.to(roomId).emit('responsePosted', answer);
+            this.sio.to(roomId).emit('responsePosted', answer);
+        } catch (err) {
+            this.tio.emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+        }
     }
 
     registerHandlers(socket) {
