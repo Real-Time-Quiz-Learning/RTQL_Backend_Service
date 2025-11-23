@@ -1,5 +1,7 @@
 // const express = require('express')
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' with { type: 'json' };
 import process from 'process';
 import cors from 'cors';
 import { Server } from 'socket.io';
@@ -61,6 +63,8 @@ class BackendServer {
     this.app.use('/signup', this.signupRouter.getRouter());
 
     this.app.use('/question', this.questionRouter.getRouter());
+
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     // Update this once responseRouter.js is created --> for dealing with student responses to questions
     this.app.get('/response', (req, res) => {
