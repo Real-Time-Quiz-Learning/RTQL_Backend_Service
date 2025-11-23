@@ -4,6 +4,8 @@ const POST = "POST";
 
 const GET = "GET";
 
+const PUT = "PUT";
+
 const dbQuestionEndpoint = "/question";
 
 const dbAnswerEndpoint = "/response";
@@ -78,6 +80,41 @@ class DBService {
             console.log("in the catch block :( errorMsg: " + error);
             return errorMsg;
         }
+    }
+
+    static async updateQuestion(question, userID, questionID){
+       const errorMsg = {
+            error: true,
+            message: "Error updating question"
+        }
+
+        const postBody = {
+            pid: userID,
+            qtext: question
+        }
+
+        try {
+            const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint + "/" + questionID, {
+                method: PUT,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(postBody)
+            });
+
+            if (!response.ok) {
+                return errorMsg;
+            }
+
+            const result = await response.json();
+            return result;
+
+        } catch (error) {
+            console.log("in the catch block :( errorMsg: " + error);
+            return errorMsg;
+        }
+
+
     }
 
     static async getAllQuestions(userID) {

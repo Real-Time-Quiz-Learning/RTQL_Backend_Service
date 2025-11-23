@@ -90,17 +90,13 @@ class QuestionRouter {
             }
             );
 
-        // NOT IMPLEMENTED WAITING TO SET UP DB
         this.router.route('/getSaved/')
             .get(async (req, res) => {
 
                 const userID = req.validUser.response.id;
                 console.log("The userID is: " + userID);
 
-                // send ID to db to get all questions
                 const dbResponse = await DBService.getAllQuestions(userID);
-
-                // TO DO: finish this part
 
                 if (dbResponse.error) {
                     res.status(400);
@@ -118,8 +114,6 @@ class QuestionRouter {
             }
             );
 
-
-             // NOT IMPLEMENTED WAITING TO SET UP DB
         this.router.route('/getAnswers')
             .get(async (req, res) => {
 
@@ -145,6 +139,38 @@ class QuestionRouter {
                 res.json({
                     message: "Here are some great answers!",
                     answers: dbResponse.response.data
+                })
+            }
+            );
+
+
+             this.router.route('/update/')
+            .get((req, res) => {
+                res.send('Hello World at the QUESTION UPDATE route!')
+            })
+            .put(async (req, res) => {
+
+                // decompose the request (hope everything is there!)
+                const question = req.body.question;
+                const qid = req.body.qid;
+
+                // get user ID from token response
+                const userID = req.validUser.response.id;
+
+                // save response
+                const dbResponseQ = await DBService.updateQuestion(question, userID, qid);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Just saved some great questions!"
                 })
             }
             );
