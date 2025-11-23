@@ -73,7 +73,7 @@ class BackendServer {
     });
 
     // Register sockets
-    this.teacher.use(AuthService.validateToken);
+    this.teacher.use(AuthService.s_validateToken);
     this.teacher.on("connection", (socket) => {
       this.teacherSocket.registerHandlers(socket);
     });

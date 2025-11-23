@@ -130,7 +130,7 @@ class AuthService {
     }
 
     // socket.io middleware function to check that the user is authenticated
-    static async validateToken(socket, next) {
+    static async s_validateToken(socket, next) {
         const errorMsg = {
             error: true,
             message: AuthService.validateTokenErrorMsg
