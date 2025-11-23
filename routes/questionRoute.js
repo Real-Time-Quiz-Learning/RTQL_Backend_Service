@@ -24,9 +24,6 @@ class QuestionRouter {
                 res.send('Hello World at the QUESTION SEND route!')
             })
             .post(async (req, res) => {
-
-                console.log("at the question route yay");
-
                 const questionPrompt = req.body;
 
                 const modelResponse = await ModelService.sendQuestion(questionPrompt);
@@ -53,22 +50,16 @@ class QuestionRouter {
             })
             .post(async (req, res) => {
 
-                console.log("at the question route yay");
-
                 // decompose the request (hope everything is there!)
                 const question = req.body.question;
                 const answers = req.body.options;
                 const correct = req.body.correct;
 
                 // get user ID from token response
-                console.log("VALID USER: " + req.validUser);
                 const userID = req.validUser.response.id;
-                console.log("The userID is: " + userID);
 
                 // save response
                 const dbResponseQ = await DBService.saveQuestion(question, userID);
-
-                console.log("AHHHH dbResponseQ: " + JSON.stringify(dbResponseQ));
 
                 if (dbResponseQ.error) {
                     res.status(400);
@@ -80,9 +71,6 @@ class QuestionRouter {
 
                 // this should get the questionID
                 const questionID = dbResponseQ.response.data.insertId;
-
-                console.log("QUESTIONID " + questionID);
-                console.log("ANSWER COUNT " + answers.length);
 
                 for (let i = 0; i < answers.length; i++) {
                     let dbResponseA = await DBService.saveAnswer(answers[i], questionID, i == correct);

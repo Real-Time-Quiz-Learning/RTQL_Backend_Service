@@ -6,10 +6,9 @@ const POST = "POST";
 
 class ModelService {
 
-    static modelEndpoint = "https://api.blindy.net/questions";
+    static modelEndpoint = process.env.MODEL_END;
 
     static async sendQuestion(promptJSON){
-        console.log("sending questions");
 
         const errorMsg = {
             error: true,
