@@ -34,8 +34,7 @@ class BackendServer {
       cors: {
         origin: '*',
         methods: [ 'GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS' ],
-        allowedHeaders: [ "authorization" ],
-        credentials: true
+        allowedHeaders: [ "Authorization", "authorization" ]
       }
     });
 
