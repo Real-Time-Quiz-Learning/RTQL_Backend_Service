@@ -13,26 +13,64 @@
         {
             "url": "http://64.181.233.131:3677/api/v1",
             "description": "RTQL API version 1 base route (proper)."
+        },
+        {
+            "url": "http://localhost:3677/",
+            "description": "RTQL API service base route if developing on a machine."
         }
     ],
     "paths": {
         "/login": {
-            "get": {
-
-            },
             "post": {
-
+                "tags": [ "login" ]
             }
         },
+
         "/signup": {
-            "get": {
-
-            },
             "post": {
-
+                "tags": [ "signup" ]
             }
         },
-        "/question": {
+
+        "/question/send": {
+            "post": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/save": {
+            "post": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/getSaved": {
+            "get": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/getAnswers": {
+            "get": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/update": {
+            "put": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/delete": {
+            "delete": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/updateAnswer": {
+            "put": {
+                "tags": [ "question" ]
+            }
+        },
+        "/question/deleteAnswer": {
+            "delete": {
+                "tags": [ "question" ]
+            }
         }
     }
 }
