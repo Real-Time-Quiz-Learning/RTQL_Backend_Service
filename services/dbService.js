@@ -6,6 +6,8 @@ const GET = "GET";
 
 const PUT = "PUT";
 
+const DELETE = "DELETE";
+
 const dbQuestionEndpoint = "/question";
 
 const dbAnswerEndpoint = "/response";
@@ -115,6 +117,33 @@ class DBService {
         }
 
 
+    }
+
+       static async deleteQuestion(questionID){
+       const errorMsg = {
+            error: true,
+            message: "Error deleting question"
+        }
+
+        try {
+            const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint + "/" + questionID, {
+                method: DELETE,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                return errorMsg;
+            }
+
+            const result = await response.json();
+            return result;
+
+        } catch (error) {
+            console.log("in the catch block :( errorMsg: " + error);
+            return errorMsg;
+        }
     }
 
     static async getAllQuestions(userID) {

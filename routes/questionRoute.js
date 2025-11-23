@@ -144,7 +144,7 @@ class QuestionRouter {
             );
 
 
-             this.router.route('/update/')
+        this.router.route('/update/')
             .get((req, res) => {
                 res.send('Hello World at the QUESTION UPDATE route!')
             })
@@ -171,6 +171,32 @@ class QuestionRouter {
                 res.status(200);
                 res.json({
                     message: "Just saved some great questions!"
+                })
+            }
+            );
+
+        this.router.route('/delete/')
+            .get((req, res) => {
+                res.send('Hello World at the QUESTION DELETE route!')
+            })
+            .delete(async (req, res) => {
+
+                const qid = req.body.qid;
+
+                // save response
+                const dbResponseQ = await DBService.deleteQuestion(qid);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Just deleted your question!"
                 })
             }
             );
