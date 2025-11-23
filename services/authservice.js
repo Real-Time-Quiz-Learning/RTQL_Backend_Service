@@ -1,5 +1,9 @@
 import process from 'process';
 
+const invalidTokenMsg = "Error authenticating user: invalid token";
+
+const socketAuthErrorMsg = "Error authenticating user: invalid socket authentication";
+
 /**
  * The AuthService class has the methods to communicate with the Authentication API.
  */
@@ -76,37 +80,6 @@ class AuthService {
         }
     }
 
-    // static async validateToken(token){
-    //         const errorMsg = {
-    //         error: true,
-    //         message: AuthService.validateTokenErrorMsg
-    //     }
-
-    //     const bearerString = `Bearer ${token}`
-
-    //     try {
-    //         const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 "Authorization": bearerString
-    //             }
-    //         });
-
-    //         if (!response.ok) {
-    //             console.log(response);
-    //             return errorMsg;
-    //         }
-
-    //         const result = await response.json();
-
-    //         return result;
-
-    //     } catch (error) {
-    //         return errorMsg;
-    //     }
-    // 
-
     // express middleware function to check that the user is authenticated
     static async validateToken(req, res, next) {
 
@@ -121,7 +94,7 @@ class AuthService {
 
         if (!response.ok) {
             console.log(response);
-            throw new Error("invalid token");
+            throw new Error(invalidTokenMsg);
         }
 
         req.validUser = await response.json();
@@ -138,7 +111,7 @@ class AuthService {
 
         console.log(socket.handshake.headers);
         if (!socket.handshake.headers['authorization'])
-            throw new Error('bro you need authorization');
+            throw new Error(socketAuthErrorMsg);
 
         const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
             method: "GET",
@@ -149,7 +122,7 @@ class AuthService {
 
         if (!response.ok) {
             console.log(response);
-            next(new Error("invalid token"));
+            next(new Error(invalidTokenMsg));
         }
 
         next();

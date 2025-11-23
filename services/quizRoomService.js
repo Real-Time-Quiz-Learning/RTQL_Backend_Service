@@ -1,3 +1,23 @@
+const errorRoomConnectionIDMsg = "No room with the given connection ID";
+
+const errorRoomDNEMsg = "No such room exists";
+
+const errorNoQuestionMsg = "There is no question";
+
+const errorNoOptionsMsg = "There are no options for this question";
+
+const errorNoCorrectMsg = "There are no correct answers for this question";
+
+const errorInactiveQuestionDNEMsg = "Can't make question inactive, no question exists";
+
+const errorNoQforResponseMsg = "There is no question for this response";
+
+const errorNoGuessforQMsg = "There is no guess for this question";
+
+const errorUndefinedClientMsg = "Question submitted for undefined client";
+
+const errorInactiveQMsg = "The question you are trying to respond to is now inactive";
+
 export class QuizRoomService {
     constructor() {
         this.rooms = {};
@@ -7,7 +27,7 @@ export class QuizRoomService {
     // Should likely have more validation here
     _validateRoomConnectionId(roomConnectionId) {
         if (!this.rooms[roomConnectionId])
-            throw new Error('no room with the given connection id');
+            throw new Error(errorRoomConnectionIDMsg);
     }
 
     // Create a new room, will be associated with connection
@@ -74,7 +94,7 @@ export class QuizRoomService {
     // Associate a client connection with the quiz room
     addClientToQuizRoom(roomConnectionId, clientConnectionId, nickname) {
         if (!this.rooms[roomConnectionId]) {
-            throw new Error('cannot connect to such a room as it does not actually exist');
+            throw new Error(errorRoomDNEMsg);
         } else {
             let snick = (nickname !== '')
                 ? nickname
@@ -96,11 +116,11 @@ export class QuizRoomService {
         this._validateRoomConnectionId(roomConnectionId);
 
         if (question.question === undefined)
-            throw new Error('there is no question in this question');
+            throw new Error(errorNoQuestionMsg);
         if (question.options === undefined)
-            throw new Error('there are no options for this question');
+            throw new Error(errorNoOptionsMsg);
         if (question.correct === undefined)
-            throw new Error('there is not correct answer for this question');
+            throw new Error(errorNoCorrectMsg);
 
         console.log(`question: ${JSON.stringify(question)}`);
 
@@ -124,7 +144,7 @@ export class QuizRoomService {
             .filter(c => c.id === Number.parseInt(questionId))[0];
 
         if (!question)
-            throw new Error('could not make a question inactive because it does not exist');
+            throw new Error(errorInactiveQuestionDNEMsg);
 
         question.active = false;
 
@@ -136,11 +156,11 @@ export class QuizRoomService {
         this._validateRoomConnectionId(roomConnectionId);
 
         if (answer.questionId === undefined)
-            throw new Error('there is no question for this response');
+            throw new Error(errorNoQforResponseMsg);
         if (answer.response === undefined)
-            throw new Error('there is no guess for this question');
+            throw new Error(errorNoGuessforQMsg);
         if (answer.clientId === undefined)
-            console.log('answer submitted for an undefined client');
+            console.log(errorUndefinedClientMsg);
 
         console.log(`repsonse: ${JSON.stringify(answer)}`);
 
@@ -151,9 +171,9 @@ export class QuizRoomService {
         console.log(JSON.stringify(respondingTo));
 
         if (!respondingTo)
-            throw new Error('the question which you are attempting to respond to does in fact not exist');
+            throw new Error(errorNoQforResponseMsg);
         if (!respondingTo.active)
-            throw new Error('the question which you are attempting to respond to is in fact no longer active');
+            throw new Error(errorInactiveQMsg);
 
         console.log(respondingTo);
 

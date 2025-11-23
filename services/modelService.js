@@ -4,6 +4,8 @@
 
 const POST = "POST";
 
+const errorSendingQuestionMsg = "Error sending question";
+
 class ModelService {
 
     static modelEndpoint = process.env.MODEL_END;
@@ -12,7 +14,7 @@ class ModelService {
 
         const errorMsg = {
             error: true,
-            message: "Error sending question"
+            message: errorSendingQuestionMsg
         }
 
         try{

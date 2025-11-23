@@ -12,21 +12,37 @@ const dbQuestionEndpoint = "/question";
 
 const dbAnswerEndpoint = "/response";
 
+const errorAddingUserMsg = "Error adding new user";
+
+const errorSavingQuestionMsg = "Error saving question";
+
+const errorUpdatingQuestionMsg = "Error updating question";
+
+const errorDeletingQuestionMsg = "Error deleting question";
+
+const errorGettingAnswerMsg = "Error getting answer";
+
+const errorGettingQuestionsMsg = "Error getting questions";
+
+const errorSavingAnswerMsg = "Error saving answer";
+
+const errorUpdatingAnswerMsg = "Error updating answer";
+
+const errorDeletingAnswerMsg = "Error deleting answer";
+
 
 /**
  * The DBService class has the methods needed to communicate with the database API.
  */
 class DBService {
 
-
-    // static dbEndpoint = "http://64.181.233.131:6767/";
     static dbEndpoint = process.env.DB_END;
 
     static async addNewUser(userJSON) {
 
         const errorMsg = {
             error: true,
-            message: "Error adding new user"
+            message: errorAddingUserMsg
         }
 
         try {
@@ -54,7 +70,7 @@ class DBService {
     static async saveQuestion(question, userID) {
         const errorMsg = {
             error: true,
-            message: "Error saving question"
+            message: errorSavingQuestionMsg
         }
 
         const postBody = {
@@ -87,7 +103,7 @@ class DBService {
     static async updateQuestion(question, userID, questionID) {
         const errorMsg = {
             error: true,
-            message: "Error updating question"
+            message: errorUpdatingQuestionMsg
         }
 
         const postBody = {
@@ -122,7 +138,7 @@ class DBService {
     static async deleteQuestion(questionID) {
         const errorMsg = {
             error: true,
-            message: "Error deleting question"
+            message: errorDeletingQuestionMsg
         }
 
         try {
@@ -149,7 +165,7 @@ class DBService {
     static async getAllQuestions(userID) {
         const errorMsg = {
             error: true,
-            message: "Error adding new user"
+            message: errorGettingQuestionsMsg
         }
 
         try {
@@ -173,7 +189,7 @@ class DBService {
     static async getAnswers(qid) {
         const errorMsg = {
             error: true,
-            message: "Error adding new user"
+            message: errorGettingAnswerMsg
         }
 
         try {
@@ -198,7 +214,7 @@ class DBService {
     static async saveAnswer(answer, questionID, correct) {
         const errorMsg = {
             error: true,
-            message: "Error adding new user"
+            message: errorSavingAnswerMsg
         }
 
         const postBody = {
@@ -237,7 +253,7 @@ class DBService {
     static async updateResponse(response, responseID, correct) {
         const errorMsg = {
             error: true,
-            message: "Error updating answer to question"
+            message: errorUpdatingAnswerMsg
         }
 
         const postBody = {
@@ -273,7 +289,7 @@ class DBService {
     static async deleteResponse(responseID) {
         const errorMsg = {
             error: true,
-            message: "Error deleting response"
+            message: errorDeletingAnswerMsg
         }
 
         try {
