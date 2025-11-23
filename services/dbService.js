@@ -84,8 +84,8 @@ class DBService {
         }
     }
 
-    static async updateQuestion(question, userID, questionID){
-       const errorMsg = {
+    static async updateQuestion(question, userID, questionID) {
+        const errorMsg = {
             error: true,
             message: "Error updating question"
         }
@@ -119,8 +119,8 @@ class DBService {
 
     }
 
-       static async deleteQuestion(questionID){
-       const errorMsg = {
+    static async deleteQuestion(questionID) {
+        const errorMsg = {
             error: true,
             message: "Error deleting question"
         }
@@ -170,7 +170,7 @@ class DBService {
 
     }
 
-        static async getAnswers(qid) {
+    static async getAnswers(qid) {
         const errorMsg = {
             error: true,
             message: "Error adding new user"
@@ -208,7 +208,7 @@ class DBService {
         }
 
         try {
-            
+
             const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint, {
                 method: POST,
                 headers: {
@@ -234,8 +234,8 @@ class DBService {
 
     }
 
-    static async updateResponse(response, responseID, correct){
-       const errorMsg = {
+    static async updateResponse(response, responseID, correct) {
+        const errorMsg = {
             error: true,
             message: "Error updating answer to question"
         }
@@ -259,7 +259,6 @@ class DBService {
             }
 
             const result = await response.json();
-            console.log("RESULT: " + JSON.stringify(response))
             return result;
 
         } catch (error) {
@@ -268,6 +267,34 @@ class DBService {
         }
 
 
+    }
+
+
+    static async deleteResponse(responseID) {
+        const errorMsg = {
+            error: true,
+            message: "Error deleting response"
+        }
+
+        try {
+            const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint + "/" + responseID, {
+                method: DELETE,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                return errorMsg;
+            }
+
+            const result = await response.json();
+            return result;
+
+        } catch (error) {
+            console.log("in the catch block :( errorMsg: " + error);
+            return errorMsg;
+        }
     }
 
 

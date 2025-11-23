@@ -230,6 +230,34 @@ class QuestionRouter {
             }
             );
 
+        this.router.route('/deleteAnswer/')
+            .get((req, res) => {
+                res.send('Hello World at the QUESTION DELETE ANSWER route!')
+            })
+            .delete(async (req, res) => {
+
+                const rid = req.body.rid;
+
+                console.log("rid: " + rid);
+
+                // save response
+                const dbResponseQ = await DBService.deleteResponse(rid);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Just deleted the answer!"
+                })
+            }
+            );
+
     }
 }
 
