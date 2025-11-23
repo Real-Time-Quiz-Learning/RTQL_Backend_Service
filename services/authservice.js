@@ -111,7 +111,7 @@ class AuthService {
 
         console.log(socket.handshake.headers);
         if (!socket.handshake.headers['authorization'])
-            throw new Error(socketAuthErrorMsg);
+            next(new Error('invalid token'));
 
         const response = await fetch(AuthService.authEndpoint + AuthService.validateTokenRoute, {
             method: "GET",
@@ -122,7 +122,7 @@ class AuthService {
 
         if (!response.ok) {
             console.log(response);
-            next(new Error(invalidTokenMsg));
+            next(new Error(socketAuthErrorMsg));
         }
 
         next();
