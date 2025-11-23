@@ -201,6 +201,35 @@ class QuestionRouter {
             }
             );
 
+        this.router.route('/updateAnswer/')
+            .get((req, res) => {
+                res.send('Hello World at the QUESTION UPDATE ANSWER route!')
+            })
+            .put(async (req, res) => {
+
+                // decompose the request (hope everything is there!)
+                const response = req.body.response;
+                const rid = req.body.rid;
+                const correct = req.body.correct;
+
+                // save response
+                const dbResponseQ = await DBService.updateResponse(response, rid, correct);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Just updated that answer!"
+                })
+            }
+            );
+
     }
 }
 

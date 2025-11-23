@@ -234,6 +234,42 @@ class DBService {
 
     }
 
+    static async updateResponse(response, responseID, correct){
+       const errorMsg = {
+            error: true,
+            message: "Error updating answer to question"
+        }
+
+        const postBody = {
+            rtext: response,
+            correct: correct
+        }
+
+        try {
+            const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint + "/" + responseID, {
+                method: PUT,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(postBody)
+            });
+
+            if (!response.ok) {
+                return errorMsg;
+            }
+
+            const result = await response.json();
+            console.log("RESULT: " + JSON.stringify(response))
+            return result;
+
+        } catch (error) {
+            console.log("in the catch block :( errorMsg: " + error);
+            return errorMsg;
+        }
+
+
+    }
+
 
 
 
