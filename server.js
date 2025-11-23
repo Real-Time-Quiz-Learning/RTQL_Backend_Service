@@ -30,12 +30,19 @@ class BackendServer {
     this.authEnd = process.env.AUTH_END;
     this.app = express();
     this.server = http.createServer(this.app);
-    this.io = new Server(this.server);
+    this.io = new Server(this.server, {
+      cors: {
+        origin: '*',
+        methods: [ 'GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'OPTIONS' ],
+        allowedHeaders: [ "authorization" ],
+        credentials: true
+      }
+    });
 
     this.corsOptions = {
       optionSuccessStatus: 204,
       origin: '*',
-      methods: 'GET,PUT,POST,PATCH,DELTE,OPTIONS'
+      methods: 'GET,PUT,POST,PATCH,DELETE,OPTIONS'
     };
     this.app.use(cors(this.corsOptions));
 

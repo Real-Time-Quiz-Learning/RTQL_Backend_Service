@@ -94,7 +94,7 @@ class AuthService {
 
         if (!response.ok) {
             console.log(response);
-            throw new Error(invalidTokenMsg);
+            next(new Error(invalidTokenMsg))
         }
 
         req.validUser = await response.json();
