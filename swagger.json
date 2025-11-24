@@ -7,28 +7,59 @@
     },
     "servers": [
         {
-            "url": "http://64.181.233.131:3677/",
+            "url": "http://64.181.233.131:3677",
             "description": "RTQL API service base route."
+        },
+        {
+            "url": "http://localhost:3677",
+            "description": "RTQL API service base route if developing on a machine."
         },
         {
             "url": "http://64.181.233.131:3677/api/v1",
             "description": "RTQL API version 1 base route (proper)."
-        },
-        {
-            "url": "http://localhost:3677/",
-            "description": "RTQL API service base route if developing on a machine."
         }
     ],
     "paths": {
         "/login": {
             "post": {
-                "tags": [ "login" ]
+                "tags": [ "login" ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/login_user"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/auth_details"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
-
         "/signup": {
             "post": {
-                "tags": [ "signup" ]
+                "tags": [ "signup" ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/signup_user"
+                            }
+                        }
+                    }
+                }
             }
         },
 
@@ -70,6 +101,44 @@
         "/question/deleteAnswer": {
             "delete": {
                 "tags": [ "question" ]
+            }
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "login_user": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "pass": {
+                        "type": "string"
+                    }
+                }
+            },
+            "signup_user": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "fname": {
+                        "type": "string"
+                    },
+                    "lname": {
+                        "type": "string"
+                    },
+                    "pass": {
+                        "type": "string"
+                    }
+                }
+            },
+            "auth_details": {
+                "type": "object",
+                "properties": {
+                }
             }
         }
     }

@@ -20,14 +20,14 @@ export class TeacherSocket {
         this.sio.emit('outgoing', message);
     }
 
-    quizRoomCreate(user) {
+    quizRoomCreate() {
         console.log(`creating a new quiz room: ${this.socket.id}`);
         try {
             let roomId = this.socket.id;
 
             this.socket.join(roomId);
             this.quizRoomService.createAQuizRoom(this.socket.id);
-            this.tio.to(this.socket.id).emit('quizRoomCreated', { teacher: user, roomId: roomId });
+            this.tio.to(this.socket.id).emit('quizRoomCreated', { roomId: roomId });
 
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
