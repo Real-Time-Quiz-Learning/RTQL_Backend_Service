@@ -80,42 +80,178 @@
 
         "/question/send": {
             "post": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/send_question"
+                            },
+                            "examples": {
+                                "mars": {
+                                    "summary": "ask 1 question about the solar system.",
+                                    "value": {
+                                        "input": "questions about the solar system.",
+                                        "questions": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "questions you requested with responses and the correct answer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/send_question_response" 
+                                },
+                                "examples": {
+                                    "mars": {
+                                        "summary": "ask for 1 question about the solar system.",
+                                        "value": {
+                                            "message": "Here are some great questions!",
+                                            "questions": [
+                                                {
+                                                    "question": "Which planet is known as the Red Planet?",
+                                                    "options": [
+                                                        "Jupiter",
+                                                        "Venus",
+                                                        "Earth",
+                                                        "Mars"
+                                                    ],
+                                                    "correct": 3
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/save": {
             "post": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/question"
+                            },
+                            "examples": {
+                                "mars": {
+                                    "summary": "save a question about the solar system.",
+                                    "value": {
+                                        "question": "Which planet is known as the Red Planet?",
+                                        "options": [
+                                            "Jupiter",
+                                            "Venus",
+                                            "Earth",
+                                            "Mars"
+                                        ],
+                                        "correct": 3
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "saved question confirmation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "examples": {
+                                    "save": {
+                                        "summary": "save a question about the solar system.",
+                                        "value": {
+                                            "message": "Question saved successfully!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/getSaved": {
             "get": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/getAnswers": {
             "get": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/update": {
             "put": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/delete": {
             "delete": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/updateAnswer": {
             "put": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/question/deleteAnswer": {
             "delete": {
-                "tags": [ "question" ]
+                "tags": [ "question" ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -169,6 +305,48 @@
                     },
                     "email": {
                         "type": "string"
+                    }
+                }
+            },
+            "send_question": {
+                "type": "object",
+                "properties": {
+                    "input": {
+                        "type": "string"
+                    },
+                    "questions": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "send_question_response": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "questions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/question"
+                        }
+                    }
+                }
+            },
+            "question": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string"
+                    },
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "correct": {
+                        "type": "integer"
                     }
                 }
             }
