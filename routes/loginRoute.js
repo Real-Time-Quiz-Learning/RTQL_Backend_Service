@@ -50,7 +50,8 @@ class LoginRouter {
                     res.json({
                         message: "Login success!",
                         token: token,
-                        email: credentials.email
+                        email: credentials.email,
+                        admin: authLoginResponse.response.data.admin
                     })
                 }
             })

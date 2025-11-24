@@ -512,6 +512,110 @@
                     }
                 ]
             }
+        },
+        "/admin": {
+            "get": {
+                "summary": "admin stats",
+                "tags": [
+                    "admin"
+                ],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "admin",
+                        "headers": {
+                            "X-Powered-By": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Content-Length": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "ETag": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Date": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Connection": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "not an admin",
+                        "headers": {
+                            "X-Powered-By": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Access-Control-Allow-Origin": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Content-Length": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            },
+                            "ETag": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Date": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Connection": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {

@@ -98,6 +98,9 @@ class AuthService {
         }
 
         req.validUser = await response.json();
+        
+        console.log('EXPRESS MIDDLEWARE VALIDATE TOKEN');
+        console.log(req.validUser);
 
         next();
     }
