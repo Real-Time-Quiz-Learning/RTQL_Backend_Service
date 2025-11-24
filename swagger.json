@@ -925,7 +925,7 @@
                 }
             },
             "save_response": {
-                "type": "obect",
+                "type": "object",
                 "properties": {
                     "qid": {
                         "type": "integer"
@@ -977,7 +977,7 @@
                 }
             },
             "error_response": {
-                "type": "obect",
+                "type": "object",
                 "properties": {
                     "message": {
                         "type": "string"
