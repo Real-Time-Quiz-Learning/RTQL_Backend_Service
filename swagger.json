@@ -106,6 +106,13 @@
     },
 
     "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
         "schemas": {
             "login_user": {
                 "type": "object",
@@ -138,6 +145,15 @@
             "auth_details": {
                 "type": "object",
                 "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
                 }
             }
         }
