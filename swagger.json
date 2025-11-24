@@ -412,6 +412,17 @@
                         }
                     }
                 },
+                "parameters": [
+                    {
+                        "name": "qid",
+                        "description": "id of the question whose responses/answers you want to get",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "security": [
                     {
                         "bearerAuth": []
