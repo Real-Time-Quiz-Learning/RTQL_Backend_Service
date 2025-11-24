@@ -56,6 +56,16 @@ export class TeacherSocket {
         }
     }
 
+    quizRoomStats(roomId) {
+        console.log(`getting quiz stats for room: ${roomId}`);
+        try {
+            let quizStats = this.quizRoomService.getQuizRoomStats(roomId);
+            this.tio.to(roomId).emit('quizStats', quizStats);
+        } catch (err) {
+            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+        }
+    }
+
     postQuizQuestion(roomId, question) {
         console.log(`${roomId}: ${JSON.stringify(question)}`);
         try {
