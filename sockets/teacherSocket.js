@@ -27,7 +27,7 @@ export class TeacherSocket {
 
             this.socket.join(roomId);
             this.quizRoomService.createAQuizRoom(this.socket.id);
-            this.tio.to(this.socket.id).emit('quizRoomCreated', { roomId: roomId });
+            this.tio.to(this.socket.id).emit('quizRoomCreated', roomId);
 
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));

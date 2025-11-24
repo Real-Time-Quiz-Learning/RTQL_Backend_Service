@@ -5,6 +5,7 @@
         "description": "<h1>RTQL API</h1><p>Use RTQL's API to generate quiz questions!</p>",
         "version": "1.0.0"
     },
+
     "servers": [
         {
             "url": "http://64.181.233.131:3677",
@@ -19,6 +20,7 @@
             "description": "RTQL API version 1 base route (proper)."
         }
     ],
+
     "paths": {
         "/login": {
             "post": {
@@ -47,6 +49,7 @@
                 }
             }
         },
+
         "/signup": {
             "post": {
                 "tags": [ "signup" ],
@@ -56,6 +59,18 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/signup_user"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/auth_details"
+                                }
                             }
                         }
                     }
@@ -110,7 +125,8 @@
             "bearerAuth": {
                 "type": "http",
                 "scheme": "bearer",
-                "bearerFormat": "JWT"
+                "bearerFormat": "JWT",
+                "description": "Enter JWT Bearer token **_only_**"
             }
         },
         "schemas": {
