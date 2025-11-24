@@ -46,8 +46,10 @@ export class TeacherSocket {
             this.sio.to(roomId).emit('quizStats', quizStats);
 
             // Initiate the teardown
-            // this.quizRoomService.deleteAQuizRoom(roomId);
+            this.quizRoomService.deleteAQuizRoom(roomId);
+
             console.log('WE HAVE INITIATED THE TEARDOWN IT IS ALL OVER NOW 🔥🔥🧨🧨💥💥🧨💣💣💣🧨💥🔥');
+            console.log(JSON.stringify(this.quizRoomService.rooms));
 
         } catch (err) {
             this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
@@ -115,5 +117,6 @@ export class TeacherSocket {
         socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
         socket.on('quizRoomQuestionInactive', this.b_quizRoomMakeQuestionInactive);
         socket.on('quizRoomDestroy', this.b_quizRoomDestroy);
+        socket.on('disconnect', this.b_quizRoomDestroy);
     }
 }

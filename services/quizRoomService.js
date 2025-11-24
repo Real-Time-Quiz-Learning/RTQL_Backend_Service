@@ -4,6 +4,8 @@ const errorRoomDNEMsg = "No such room exists";
 
 const errorNoQuestionMsg = "There is no question";
 
+const errorNoQuestionIdMsg = 'There is not question id';
+
 const errorNoOptionsMsg = "There are no options for this question";
 
 const errorNoCorrectMsg = "There are no correct answers for this question";
@@ -115,6 +117,8 @@ export class QuizRoomService {
     addQuestion(roomConnectionId, question) {
         this._validateRoomConnectionId(roomConnectionId);
 
+        if (question.qid === undefined)
+            throw new Error(errorNoQuestionIdMsg);
         if (question.question === undefined)
             throw new Error(errorNoQuestionMsg);
         if (question.options === undefined)
@@ -126,7 +130,7 @@ export class QuizRoomService {
 
         question.answers = [];
         question.active = true;
-        question.id = this.questions++;
+        // question.id = this.questions++;
 
         this.rooms[roomConnectionId].questions.push(question);
 
@@ -141,7 +145,7 @@ export class QuizRoomService {
         console.log(JSON.stringify(this.rooms[roomConnectionId].questions));
 
         let question = this.rooms[roomConnectionId].questions
-            .filter(c => c.id === Number.parseInt(questionId))[0];
+            .filter(c => c.qid === Number.parseInt(questionId))[0];
 
         if (!question)
             throw new Error(errorInactiveQuestionDNEMsg);
@@ -155,7 +159,7 @@ export class QuizRoomService {
     addQuestionResponse(roomConnectionId, answer) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        if (answer.questionId === undefined)
+        if (answer.qid === undefined)
             throw new Error(errorNoQforResponseMsg);
         if (answer.response === undefined)
             throw new Error(errorNoGuessforQMsg);
@@ -166,7 +170,7 @@ export class QuizRoomService {
 
         // let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
         let respondingTo = this.rooms[roomConnectionId].questions
-            .filter(c => c.id === answer.questionId)[0];
+            .filter(c => c.qid === answer.qid)[0];
 
         console.log(JSON.stringify(respondingTo));
 
