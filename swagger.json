@@ -45,6 +45,24 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error logging in",
+                                        "value": {
+                                            "message": "Error logging in!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -71,6 +89,24 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/auth_details"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error signing up",
+                                        "value": {
+                                            "message": "Error signing up!"
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -132,6 +168,24 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error getting question",
+                                        "value": {
+                                            "message": "Error getting question!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -177,13 +231,32 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/save_response"
                                 },
                                 "examples": {
                                     "save": {
                                         "summary": "save a question about the solar system.",
                                         "value": {
+                                            "qid": 2,
                                             "message": "Question saved successfully!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error saving question",
+                                        "value": {
+                                            "message": "Error saving question!"
                                         }
                                     }
                                 }
@@ -238,6 +311,24 @@
                                                     "correct": 2
                                                 }
                                             ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error getting questions",
+                                        "value": {
+                                            "message": "Error getting questions!"
                                         }
                                     }
                                 }
@@ -301,6 +392,24 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error getting answers",
+                                        "value": {
+                                            "message": "Error getting answers!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -352,6 +461,24 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error updating question",
+                                        "value": {
+                                            "message": "Error updating question!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -397,6 +524,24 @@
                                         "summary": "delete a question about cats",
                                         "value": {
                                             "message": "Question deleted successfully!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error deleting question",
+                                        "value": {
+                                            "message": "Error deleting question!"
                                         }
                                     }
                                 }
@@ -454,6 +599,24 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error updating answer",
+                                        "value": {
+                                            "message": "Error updating answer!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -499,6 +662,24 @@
                                         "summary": "delete an answer about cats",
                                         "value": {
                                             "message": "Answer deleted successfully!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error_response"
+                                },
+                                "examples": {
+                                    "error": {
+                                        "summary": "error deleting answer",
+                                        "value": {
+                                            "message": "Error deleting answer!"
                                         }
                                     }
                                 }
@@ -639,6 +820,17 @@
                     }
                 }
             },
+            "save_response": {
+                "type": "obect",
+                "properties": {
+                    "qid": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
             "update_question": {
                 "type": "object",
                 "properties": {
@@ -677,6 +869,14 @@
                     },
                     "correct": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "error_response": {
+                "type": "obect",
+                "properties": {
+                    "message": {
+                        "type": "string"
                     }
                 }
             }
