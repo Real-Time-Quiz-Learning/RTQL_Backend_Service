@@ -87,9 +87,8 @@ class QuestionRouter {
                 res.json({
                     qid: questionID,
                     message: "Just saved some great questions!"
-                })
-            }
-            );
+                });
+            });
 
         this.router.route('/getSaved/')
             .get(async (req, res) => {

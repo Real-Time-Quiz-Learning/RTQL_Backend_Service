@@ -8,6 +8,7 @@ import { Server } from 'socket.io';
 import http from 'http';
 
 import { QuizRoomService } from './services/quizRoomService.js';
+import { AdminService } from './services/adminService.js';
 import AuthService from './services/authservice.js';
 
 import { TeacherSocket } from './sockets/teacherSocket.js';
@@ -16,6 +17,7 @@ import { StudentSocket } from './sockets/studentSocket.js';
 import LoginRouter from './routes/loginRoute.js';
 import SignupRouter from './routes/signupRoute.js';
 import QuestionRouter from './routes/questionRoute.js';
+import { AdminRouter } from './routes/adminRoute.js';
 
 /**
  * The server handles everything.
@@ -45,6 +47,7 @@ class BackendServer {
     };
     this.app.use(cors(this.corsOptions));
 
+    this.adminService = new AdminService();
     this.quizRoomService = new QuizRoomService();
 
     // Socket namespaces
@@ -59,16 +62,30 @@ class BackendServer {
     // Sockets handlers
     this.teacherSocket = new TeacherSocket(this.teacher, this.student, this.quizRoomService);
     this.studentSocket = new StudentSocket(this.student, this.teacher, this.quizRoomService);
+
+    this.b_serviceMiddleware = this.serviceMiddleware.bind(this);
+  }
+
+  serviceMiddleware(req, res, next) {
+    req.services = Object.freeze({
+      adminService: this.adminService
+    });
+
+    next();
   }
 
   start() {
     this.app.use(express.static(`${process.cwd()}/public`));
 
-    this.app.use('/login', this.loginRouter.getRouter());
+    this.app.use(this.b_serviceMiddleware);
 
-    this.app.use('/signup', this.signupRouter.getRouter());
+    this.app.use('/login', this.adminService.b_apiStatsMiddleware, this.loginRouter.getRouter());
 
-    this.app.use('/question', this.questionRouter.getRouter());
+    this.app.use('/signup', this.adminService.b_apiStatsMiddleware, this.signupRouter.getRouter());
+
+    this.app.use('/question', this.adminService.b_apiStatsMiddleware, this.questionRouter.getRouter());
+      
+    this.app.use('/admin', AdminRouter);
 
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
