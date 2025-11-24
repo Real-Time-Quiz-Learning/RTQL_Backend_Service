@@ -13,6 +13,7 @@ export class TeacherSocket {
         this.b_quizRoomPostQuestion = this.postQuizQuestion.bind(this);
         this.b_quizRoomPostQuestionAnswer = this.postQuizAnswer.bind(this);
         this.b_quizRoomMakeQuestionInactive = this.makeQuizAnswerInactive.bind(this);
+        this.b_quizRoomStats = this.quizRoomStats.bind(this);
         this.b_quizRoomDestroy = this.quizRoomDestroy.bind(this);
     }
 
@@ -127,6 +128,7 @@ export class TeacherSocket {
         socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
         socket.on('quizRoomQuestionInactive', this.b_quizRoomMakeQuestionInactive);
         socket.on('quizRoomDestroy', this.b_quizRoomDestroy);
+        socket.on('quizRoomStats', this.b_quizRoomStats);
         socket.on('disconnect', this.b_quizRoomDestroy);
     }
 }
