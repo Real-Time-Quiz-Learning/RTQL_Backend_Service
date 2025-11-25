@@ -117,7 +117,7 @@ export class QuizRoomService {
     addQuestion(roomConnectionId, question) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        if (question.qid === undefined)
+        if (question.qid === undefined)         // database question id, not to be confused with the published question id (incremented)
             throw new Error(errorNoQuestionIdMsg);
         if (question.question === undefined)
             throw new Error(errorNoQuestionMsg);
@@ -159,7 +159,7 @@ export class QuizRoomService {
     addQuestionResponse(roomConnectionId, answer) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        if (answer.qid === undefined)
+        if (answer.id === undefined)
             throw new Error(errorNoQforResponseMsg);
         if (answer.response === undefined)
             throw new Error(errorNoGuessforQMsg);
@@ -170,7 +170,7 @@ export class QuizRoomService {
 
         // let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
         let respondingTo = this.rooms[roomConnectionId].questions
-            .filter(c => c.id === answer.qid)[0];
+            .filter(c => c.id === answer.id)[0];
 
         console.log(JSON.stringify(respondingTo));
 
