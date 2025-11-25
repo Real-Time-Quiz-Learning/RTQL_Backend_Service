@@ -12,7 +12,7 @@ export class TeacherSocket {
         this.b_quizRoomCreate = this.quizRoomCreate.bind(this);
         this.b_quizRoomPostQuestion = this.postQuizQuestion.bind(this);
         this.b_quizRoomPostQuestionAnswer = this.postQuizAnswer.bind(this);
-        this.b_quizRoomMakeQuestionInactive = this.makeQuizAnswerInactive.bind(this);
+        this.b_quizRoomMakeQuestionInactive = this.makeQuizQuestionInactive.bind(this);
         this.b_quizRoomStats = this.quizRoomStats.bind(this);
         this.b_quizRoomDestroy = this.quizRoomDestroy.bind(this);
     }
@@ -97,7 +97,7 @@ export class TeacherSocket {
         }
     }
 
-    makeQuizAnswerInactive(roomId, questionId) {
+    makeQuizQuestionInactive(roomId, questionId) {
         console.log(`${this.socket.id}, roomId: ${roomId}, questionId: ${questionId}`);
         try {
             let question = this.quizRoomService.makeAQuestionInactive(roomId, questionId);
