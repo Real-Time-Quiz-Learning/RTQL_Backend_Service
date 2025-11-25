@@ -130,7 +130,7 @@ export class QuizRoomService {
 
         question.answers = [];
         question.active = true;
-        // question.id = this.questions++;
+        question.id = this.questions++;         // assign a unique ID to the issued question
 
         this.rooms[roomConnectionId].questions.push(question);
 
@@ -145,7 +145,7 @@ export class QuizRoomService {
         console.log(JSON.stringify(this.rooms[roomConnectionId].questions));
 
         let question = this.rooms[roomConnectionId].questions
-            .filter(c => c.qid === Number.parseInt(questionId))[0];
+            .filter(c => c.id === Number.parseInt(questionId))[0];
 
         if (!question)
             throw new Error(errorInactiveQuestionDNEMsg);
@@ -170,7 +170,7 @@ export class QuizRoomService {
 
         // let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
         let respondingTo = this.rooms[roomConnectionId].questions
-            .filter(c => c.qid === answer.qid)[0];
+            .filter(c => c.id === answer.qid)[0];
 
         console.log(JSON.stringify(respondingTo));
 
