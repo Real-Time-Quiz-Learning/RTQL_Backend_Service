@@ -102,6 +102,9 @@ class AuthService {
         console.log('EXPRESS MIDDLEWARE VALIDATE TOKEN');
         console.log(req.validUser);
 
+        // Track user API stats in the AdminService
+        // req.services.adminService.userStats(req.validUser.response.id);
+
         next();
     }
 

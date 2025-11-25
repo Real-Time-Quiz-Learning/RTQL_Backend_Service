@@ -10,7 +10,6 @@ class QuestionRouter {
     constructor() {
         this.router = express.Router();
         this.router.use(express.json());
-        this.router.use(AuthService.validateToken);
     }
 
     getRouter() {

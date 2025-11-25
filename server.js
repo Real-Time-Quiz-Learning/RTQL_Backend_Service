@@ -79,11 +79,11 @@ class BackendServer {
 
     this.app.use(this.b_serviceMiddleware);
 
-    this.app.use('/login', this.adminService.b_apiStatsMiddleware, this.loginRouter.getRouter());
+    this.app.use('/login', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, this.loginRouter.getRouter());
 
-    this.app.use('/signup', this.adminService.b_apiStatsMiddleware, this.signupRouter.getRouter());
+    this.app.use('/signup', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, this.signupRouter.getRouter());
 
-    this.app.use('/question', this.adminService.b_apiStatsMiddleware, this.questionRouter.getRouter());
+    this.app.use('/question', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, this.questionRouter.getRouter());
       
     this.app.use('/admin', AdminRouter);
 
