@@ -11,7 +11,8 @@ export class AdminService {
     _apiStatsMiddleware(req, res, next) {
         this._apiStats['totalRequests'] += 1;
 
-        let endpointStats = this._apiStats.endpointStats[req.originalUrl];
+        let url = req.originalUrl.split('?')[0];            // strip the query params
+        let endpointStats = this._apiStats.endpointStats[url];
 
         // If there is an authorization header, track user stats
 
@@ -27,9 +28,10 @@ export class AdminService {
             endpointStats.methods[req.method] += 1;
         }
 
-        this._apiStats.endpointStats[req.originalUrl] = endpointStats;
+        this._apiStats.endpointStats[url] = endpointStats;
 
         console.log(req.originalUrl);
+        console.log(url);
         console.log(JSON.stringify(this._apiStats));
 
         next();
