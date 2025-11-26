@@ -138,8 +138,9 @@ class QuestionRouter {
                 });
             })
             .delete(async (req, res) => {
-                const qid = req.params.id;
-                const dbResponseQ = await DBService.deleteQuestion(qid);
+                const questionId = req.params.id;
+                const userId = req.validUser.response.id;
+                const dbResponseQ = await DBService.deleteQuestion(userId, questionId);
 
                 if (dbResponseQ.error) {
                     res.status(400);
@@ -161,9 +162,9 @@ class QuestionRouter {
         */
         this.router.route('/:qid/response')
             .get(async (req, res) => {
-                const qid = req.params.qid;
-                const userID = req.validUser.response.id;
-                const dbResponse = await DBService.getResponses(qid);
+                const questionId = req.params.qid;
+                const userId = req.validUser.response.id;
+                const dbResponse = await DBService.getResponses(userId, questionId);
 
                 // TODO, validate that the user requires this
 
