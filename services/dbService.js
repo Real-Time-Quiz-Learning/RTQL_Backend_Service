@@ -50,7 +50,7 @@ class DBService {
         // Do you even own the question
         const res = await DBService.getQuestionById(userId, questionId);
 
-        console.log(res);
+        // console.log(res);
 
         if (res.error)
             throw new Error('given question is not one that you own');
@@ -69,7 +69,12 @@ class DBService {
     static async _checkResponseOwnership(userId, questionId, responseId) {
         // Do you even own the question?
         const res1 = await DBService._checkQuestionOwnership(userId, questionId);
-        const test = res1.responses.some(r => r.id === responseId);
+        const test = res1.responses.some(r => r.id === parseInt(responseId));
+
+        // console.log(`${responseId}`);
+        // console.log(res1.responses[0].id);
+        // console.log(res1.responses);
+        // console.log(test);
 
         if (!test)
             throw new Error('given response does not exist on the question');
@@ -113,6 +118,7 @@ class DBService {
         return question;
     }
 
+    // --- User
 
     static async addNewUser(userJSON) {
 
@@ -142,6 +148,8 @@ class DBService {
 
         }
     }
+
+    // --- Question
 
     static async saveQuestion(question, userID) {
         const errorMsg = {
@@ -216,8 +224,6 @@ class DBService {
                 message: error.message
             };
         }
-
-
     }
 
     static async deleteQuestion(userID, questionID) {
@@ -343,11 +349,15 @@ class DBService {
 
         } catch (err) {
             console.log('[DBService] get questions by id error: ', err.message);
-            return errorMsg;
+            // return errorMsg;
+            return {
+                error: true,
+                message: err.message
+            }
         }
     }
 
-    static async getResponses(userId, questionId) {
+    static async getQuestionResponses(userId, questionId) {
         const errorMsg = {
             error: true,
             message: errorGettingAnswerMsg
@@ -375,6 +385,8 @@ class DBService {
         }
     }
 
+    // --- RESPONSE
+
     /**
      * Retrieves a question's specific resopnse.
      * 
@@ -384,18 +396,20 @@ class DBService {
     static async getResponseById(userId, questionId, responseId) {
         try {
             // await DBService._checkQuestionOwnership(userId, questionId);
-            await DBService._checkResponseOwnership(userId, questionId, responseId);
+            const res = await DBService._checkResponseOwnership(userId, questionId, responseId);
 
-            const url = new URL([DBService.dbEndpoint, 'response'].join('url'));
-            url.searchParams.append('qid', questionId);
-            url.searchParams.append('id', responseId);
+            // const url = new URL([DBService.dbEndpoint, 'response'].join('url'));
+            // url.searchParams.append('qid', questionId);
+            // url.searchParams.append('id', responseId);
+            // const res = await fetch(url);
+            // if (res.response.data && res.response.data.length === 0)
+            //     throw new Error('no befitting response');
 
-            const res = await fetch(url);
+            const response = res.responses.filter(c => c.id === parseInt(responseId));
 
-            if (res.response.data && res.response.data.length === 0)
-                throw new Error('no befitting response');
+            console.log('[DBService] response', response);
 
-            return res.response.data;
+            return response;
 
         } catch (err) {
             console.log('[DBService] error fetching response by id');
@@ -444,7 +458,7 @@ class DBService {
     }
 
     // ADD QUESTION VALIDATION
-    static async updateResponse(response, responseID, correct) {
+    static async updateResponse(userID, questionID, responseID, response, correct) {
         const errorMsg = {
             error: true,
             message: errorUpdatingAnswerMsg
@@ -457,6 +471,8 @@ class DBService {
 
         try {
             console.log(postBody);
+            await DBService._checkResponseOwnership(userID, questionID, responseID);
+
             const url = new URL([DBService.dbEndpoint, 'response', responseID].join('/'));
             const response = await fetch(url, {
                 method: PUT,
@@ -474,19 +490,26 @@ class DBService {
             return result;
 
         } catch (error) {
-            console.log("in the catch block :( errorMsg: " + error);
-            return errorMsg;
+            // console.log("in the catch block :( errorMsg: " + error);
+            // return errorMsg;
+
+            return {
+                error: true,
+                message: error.message
+            }
         }
     }
 
     // ADD QUESTION VAILDATION
-    static async deleteResponse(responseID) {
+    static async deleteResponse(userID, questionID, responseID) {
         const errorMsg = {
             error: true,
             message: errorDeletingAnswerMsg
         }
 
         try {
+            await DBService._checkResponseOwnership(userID, questionID, responseID);
+
             const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint + "/" + responseID, {
                 method: DELETE,
                 headers: {
@@ -502,8 +525,13 @@ class DBService {
             return result;
 
         } catch (error) {
-            console.log("in the catch block :( errorMsg: " + error);
-            return errorMsg;
+            // console.log("in the catch block :( errorMsg: " + error);
+            // return errorMsg;
+
+            return {
+                error: true,
+                message: error.message
+            }
         }
     }
 }

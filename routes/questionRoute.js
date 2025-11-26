@@ -104,7 +104,7 @@ class QuestionRouter {
                 res.status(200);
                 res.json({
                     message: 'question retrieved',
-                    data: dbResponse.response.data
+                    data: dbResponse
                 });
             })
             /*
@@ -164,7 +164,7 @@ class QuestionRouter {
             .get(async (req, res) => {
                 const questionId = req.params.qid;
                 const userId = req.validUser.response.id;
-                const dbResponse = await DBService.getResponses(userId, questionId);
+                const dbResponse = await DBService.getQuestionResponses(userId, questionId);
 
                 // TODO, validate that the user requires this
 
@@ -190,7 +190,7 @@ class QuestionRouter {
         */
         this.router.route('/:qid/response/:id')
             .get(async (req, res) => {
-                const userId = req.validUser.reponse.id;
+                const userId = req.validUser.response.id;
                 const questionId = req.params.qid;
                 const responseId = req.params.id;
 
@@ -212,12 +212,14 @@ class QuestionRouter {
             })
             .put(async (req, res) => {
                 // decompose the request (hope everything is there!)
-                const rid = req.params.id;
+                const userId = req.validUser.response.id;
+                const questionId = req.params.qid;
+                const responseId = req.params.id;
                 const response = req.body.rtext;
                 const correct = req.body.correct;
 
                 // save response
-                const dbResponseQ = await DBService.updateResponse(response, rid, correct);
+                const dbResponseQ = await DBService.updateResponse(userId, questionId, responseId, response, correct);
 
                 if (dbResponseQ.error) {
                     res.status(400);
@@ -229,16 +231,16 @@ class QuestionRouter {
 
                 res.status(200);
                 res.json({
-                    message: "Just updated that answer!"
+                    message: 'update response by id',
                 });
             })
             .delete(async (req, res) => {
-                const rid = req.params.id;
+                const userId = req.validUser.response.id;
+                const questionId = req.params.qid;
+                const responseId = req.params.id;
 
-                console.log("rid: " + rid);
-
-                // save response
-                const dbResponseQ = await DBService.deleteResponse(rid);
+                // delete response
+                const dbResponseQ = await DBService.deleteResponse(userId, questionId, responseId);
 
                 if (dbResponseQ.error) {
                     res.status(400);
@@ -250,7 +252,7 @@ class QuestionRouter {
 
                 res.status(200);
                 res.json({
-                    message: "Just deleted the answer!"
+                    message: 'delete response by id'
                 });
             });
 

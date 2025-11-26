@@ -7,7 +7,10 @@
   },
   "servers": [
     {
-      "url": "{{backend_api}}"
+      "url": "http://localhost:3677/v1"
+    },
+    {
+      "url": "http://64.181.233.131:3677/v1"
     }
   ],
   "paths": {
@@ -169,47 +172,14 @@
     },
     "/question/{qid}/response": {
       "get": {
-        "summary": "get responses",
+        "summary": "get answers",
         "tags": [
           "question",
           "response"
         ],
         "responses": {
           "200": {
-            "description": "get responses",
-            "headers": {
-              "X-Powered-By": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Access-Control-Allow-Origin": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Content-Length": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "ETag": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Date": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Connection": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Keep-Alive": {
-                "deprecated": false,
-                "schema": {}
-              }
-            }
-          },
-          "400": {
-            "description": "get responses",
+            "description": "get answers",
             "headers": {
               "X-Powered-By": {
                 "schema": {
@@ -263,14 +233,14 @@
     },
     "/question/{qid}/response/{id}": {
       "put": {
-        "summary": "update question response",
+        "summary": "update question answer",
         "tags": [
           "question",
           "response"
         ],
         "responses": {
           "200": {
-            "description": "update question answer",
+            "description": "update question answer success",
             "headers": {
               "X-Powered-By": {
                 "schema": {
@@ -306,39 +276,6 @@
                 "schema": {
                   "type": "string"
                 }
-              }
-            }
-          },
-          "400": {
-            "description": "update question answer",
-            "headers": {
-              "X-Powered-By": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Access-Control-Allow-Origin": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Content-Length": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "ETag": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Date": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Connection": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Keep-Alive": {
-                "deprecated": false,
-                "schema": {}
               }
             }
           }
@@ -381,136 +318,14 @@
         }
       ],
       "delete": {
-        "summary": "delete question response",
+        "summary": "delete question answer",
         "tags": [
           "question",
           "response"
         ],
         "responses": {
           "200": {
-            "description": "delete question answer",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "delete question answer",
-            "headers": {
-              "X-Powered-By": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Access-Control-Allow-Origin": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Content-Length": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "ETag": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Date": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Connection": {
-                "deprecated": false,
-                "schema": {}
-              },
-              "Keep-Alive": {
-                "deprecated": false,
-                "schema": {}
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "get responses by id",
-        "tags": [
-          "question",
-          "response"
-        ],
-        "responses": {
-          "200": {
-            "description": "get answers",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "get answers",
+            "description": "delete question answer success",
             "headers": {
               "X-Powered-By": {
                 "schema": {
@@ -549,8 +364,7 @@
               }
             }
           }
-        },
-        "description": "retrieves the answers (responses) for a particular question."
+        }
       }
     },
     "/question": {
@@ -754,46 +568,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "update question",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
           }
         },
         "description": "use this question to update a question as the user who is currently authenticated.",
@@ -831,46 +605,6 @@
         ],
         "responses": {
           "200": {
-            "description": "delete question",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
             "description": "delete question",
             "headers": {
               "X-Powered-By": {
@@ -1033,7 +767,12 @@
             }
           }
         }
-      }
+      },
+        "security": [
+            {
+                "bearerAuth": []
+            }
+        ]
     },
     "/model": {
       "post": {
@@ -1110,7 +849,12 @@
             }
           }
         }
-      }
+      },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
     }
   },
   "components": {
