@@ -79,7 +79,7 @@ class QuestionRouter {
 
                 res.status(200);
                 res.json({
-                    qid: questionID,
+                    id: questionID,
                     message: "Just saved some great questions!"
                 });
             });

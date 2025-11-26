@@ -17,6 +17,7 @@ export class AdminService {
 
         if (endpointStatsIdx > -1) {
             this._apiStats.endpointStats[endpointStatsIdx].totalRequests += 1;
+            this._apiStats.endpointStats[endpointStatsIdx].methods[req.method] = (this._apiStats.endpointStats[endpointStatsIdx].methods[req.method]) ? this._apiStats.endpointStats[endpointStatsIdx].methods[req.method] : 0;
             this._apiStats.endpointStats[endpointStatsIdx].methods[req.method] += 1;
 
         } else {
