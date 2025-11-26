@@ -1,3 +1,6 @@
+import { Question } from '../models/question.js';
+import { Response } from '../models/response.js';
+
 const errorRoomConnectionIDMsg = "No room with the given connection ID";
 
 const errorRoomDNEMsg = "No such room exists";
@@ -113,39 +116,49 @@ export class QuizRoomService {
         throw new Error('I have not implemented this thing yet');
     }
 
-    // Add a question to a room
+    /**
+     * Question that should be added to the room.
+     * 
+     * @param {string} roomConnectionId unqiue identifier for the quiz room connection
+     * @param {Question} question question object to add to the room
+     * @returns 
+     */
     addQuestion(roomConnectionId, question) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        if (question.qid === undefined)         // database question id, not to be confused with the published question id (incremented)
+        if (question.id === undefined)         // database question id, not to be confused with the published question id (incremented)
             throw new Error(errorNoQuestionIdMsg);
-        if (question.question === undefined)
+        if (question.qtext === undefined)
             throw new Error(errorNoQuestionMsg);
-        if (question.options === undefined)
+        if (question.responses === undefined)
             throw new Error(errorNoOptionsMsg);
-        if (question.correct === undefined)
-            throw new Error(errorNoCorrectMsg);
 
         console.log(`question: ${JSON.stringify(question)}`);
 
         question.answers = [];
         question.active = true;
-        question.id = this.questions++;         // assign a unique ID to the issued question
+        question.publishedId = this.questions++;         // assign a unique ID to the issued question
 
         this.rooms[roomConnectionId].questions.push(question);
 
         return question;
     }
 
-    // Make a question in the room inactive
-    makeAQuestionInactive(roomConnectionId, questionId) {
+    /**
+     * specific question published in the question room published.
+     * 
+     * @param {string} roomConnectionId the unique connection id
+     * @param {number} publishedId the unique published id 
+     * @returns 
+     */
+    makeAQuestionInactive(roomConnectionId, publishedId) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        console.log(`${roomConnectionId}, ${questionId}`);
+        console.log(`${roomConnectionId}, ${publishedId}`);
         console.log(JSON.stringify(this.rooms[roomConnectionId].questions));
 
         let question = this.rooms[roomConnectionId].questions
-            .filter(c => c.id === Number.parseInt(questionId))[0];
+            .filter(c => c.publishedId === Number.parseInt(publishedId))[0];
 
         if (!question)
             throw new Error(errorInactiveQuestionDNEMsg);
@@ -155,13 +168,20 @@ export class QuizRoomService {
         return question;
     }
 
-    // Add a new response to a question
+    /**
+     * specific response id submitted to the question.
+     * 
+     * @param {string} roomConnectionId the unique connection id
+     * @param {number} answer the unique published id
+     */
     addQuestionResponse(roomConnectionId, answer) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        if (answer.id === undefined)
+        if (answer.qid === undefined)
             throw new Error(errorNoQforResponseMsg);
-        if (answer.response === undefined)
+        // if (answer.response === undefined)
+        //     throw new Error(errorNoGuessforQMsg);
+        if (answer.id === undefined)
             throw new Error(errorNoGuessforQMsg);
         if (answer.clientId === undefined)
             console.log(errorUndefinedClientMsg);
@@ -170,7 +190,7 @@ export class QuizRoomService {
 
         // let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
         let respondingTo = this.rooms[roomConnectionId].questions
-            .filter(c => c.id === answer.id)[0];
+            .filter(c => c.publishedId === Number.parseInt(answer.qid))[0];
 
         console.log(JSON.stringify(respondingTo));
 
