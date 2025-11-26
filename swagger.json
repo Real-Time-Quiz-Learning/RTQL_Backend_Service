@@ -8,6 +8,14 @@
   "servers": [
     {
       "url": "{{backend_api}}"
+    },
+    {
+      "url": "http://localhost:3677/v1",
+      "description": "Development server"
+    },
+    {
+      "url": "https://64.181.233.131:3677/v1",
+      "description": "Production server"
     }
   ],
   "paths": {
@@ -249,7 +257,11 @@
             }
           }
         },
-        "description": "retrieves the answers (responses) for a particular question."
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -262,6 +274,117 @@
       ]
     },
     "/question/{qid}/response/{id}": {
+      "get": {
+        "summary": "get responses by id",
+        "tags": [
+          "question",
+          "response"
+        ],
+        "responses": {
+          "200": {
+            "description": "get answers",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "get answers",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "retrieves the answers (responses) for a particular question.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "qid",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        }
+      ],
       "put": {
         "summary": "update question response",
         "tags": [
@@ -362,24 +485,13 @@
               }
             }
           }
-        }
-      },
-      "parameters": [
-        {
-          "name": "qid",
-          "in": "path",
-          "required": true,
-          "deprecated": false,
-          "schema": {}
         },
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "deprecated": false,
-          "schema": {}
-        }
-      ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "delete": {
         "summary": "delete question response",
         "tags": [
@@ -460,97 +572,12 @@
               }
             }
           }
-        }
-      },
-      "get": {
-        "summary": "get responses by id",
-        "tags": [
-          "question",
-          "response"
-        ],
-        "responses": {
-          "200": {
-            "description": "get answers",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "get answers",
-            "headers": {
-              "X-Powered-By": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Content-Length": {
-                "schema": {
-                  "type": "integer"
-                }
-              },
-              "ETag": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Date": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Connection": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Keep-Alive": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
         },
-        "description": "retrieves the answers (responses) for a particular question."
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/question": {
@@ -640,7 +667,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
       "get": {
         "summary": "get question",
@@ -705,10 +737,117 @@
             }
           }
         },
-        "description": "retrieves the questions for the user who is currently authorized."
+        "description": "retrieves the questions for the user who is currently authorized.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/question/{id}": {
+      "get": {
+        "summary": "get question",
+        "tags": [
+          "question"
+        ],
+        "responses": {
+          "200": {
+            "description": "get question",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "get question",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        }
+      ],
       "put": {
         "summary": "update question",
         "tags": [
@@ -813,17 +952,13 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       },
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "deprecated": false,
-          "schema": {}
-        }
-      ],
       "delete": {
         "summary": "delete question",
         "tags": [
@@ -910,7 +1045,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/admin": {
@@ -1032,7 +1172,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/model": {
@@ -1109,15 +1254,21 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     }
   },
   "components": {
     "securitySchemes": {
-      "BearerAuth": {
+      "bearerAuth": {
         "type": "http",
-        "scheme": "bearer"
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
