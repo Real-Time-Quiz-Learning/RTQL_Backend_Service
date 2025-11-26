@@ -62,7 +62,8 @@ class QuestionRouter {
                     return;
                 }
 
-                // this should get the questionID
+                // this should get the questionID (don't worry about it chief I got you)
+                // commentary haha
                 const questionID = dbResponseQ.response.data.insertId;
 
                 for (let i = 0; i < answers.length; i++) {
@@ -147,18 +148,22 @@ class QuestionRouter {
                     })
                     return;
                 }
-                
+
                 res.status(200);
                 res.json({
                     message: 'delete question'
                 })
             });
 
-        this.router.route('/:id/response')
+        /*
+        The idea is that you edit responses as a part of their question object.
+        Almost like a ... sub resource :0
+        */
+        this.router.route('/:qid/response')
             .get(async (req, res) => {
                 const qid = req.params.qid;
                 const userID = req.validUser.response.id;
-                const dbResponse = await DBService.getAnswers(qid);
+                const dbResponse = await DBService.getResponses(qid);
 
                 // TODO, validate that the user requires this
 
@@ -177,6 +182,56 @@ class QuestionRouter {
                 });
             });
 
+        /*
+        The idea is that you edit responses as a part of their question object.
+        Almost like a ... sub resource :0
+        */
+        this.router.route('/:qid/response/:id')
+            .put(async (req, res) => {
+                // decompose the request (hope everything is there!)
+                const rid = req.params.id;
+                const response = req.body.response;
+                const correct = req.body.correct;
+
+                // save response
+                const dbResponseQ = await DBService.updateResponse(response, rid, correct);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Just updated that answer!"
+                });
+            })
+            .delete(async (req, res) => {
+                const rid = req.params.id;
+
+                console.log("rid: " + rid);
+
+                // save response
+                const dbResponseQ = await DBService.deleteResponse(rid);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    })
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: "Just deleted the answer!"
+                });
+            });
+
+        // To help with rewiring to the frontend
         this.router.route('/send/')
             .post(async (req, res) => {
                 res.status(499);
@@ -202,70 +257,22 @@ class QuestionRouter {
 
         this.router.route('/delete/')
             .delete(async (req, res) => {
-
-
-            }
-            );
+                res.status(499);
+                res.send('THIS ENDPOINT IS DEPRECATED');
+            });
 
         this.router.route('/updateAnswer/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION UPDATE ANSWER route!')
-            })
             .put(async (req, res) => {
-
-                // decompose the request (hope everything is there!)
-                const response = req.body.response;
-                const rid = req.body.rid;
-                const correct = req.body.correct;
-
-                // save response
-                const dbResponseQ = await DBService.updateResponse(response, rid, correct);
-
-                if (dbResponseQ.error) {
-                    res.status(400);
-                    res.json({
-                        message: dbResponseQ.message
-                    })
-                    return;
-                }
-
-                res.status(200);
-                res.json({
-                    message: "Just updated that answer!"
-                })
-            }
-            );
+                res.status(499);
+                res.send('THIS ENDPOINT IS DEPRECATED');
+            });
 
         this.router.route('/deleteAnswer/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION DELETE ANSWER route!')
-            })
             .delete(async (req, res) => {
-
-                const rid = req.body.rid;
-
-                console.log("rid: " + rid);
-
-                // save response
-                const dbResponseQ = await DBService.deleteResponse(rid);
-
-                if (dbResponseQ.error) {
-                    res.status(400);
-                    res.json({
-                        message: dbResponseQ.message
-                    })
-                    return;
-                }
-
-                res.status(200);
-                res.json({
-                    message: "Just deleted the answer!"
-                })
-            }
-            );
-
+                res.status(499);
+                res.send('THIS ENDPOINT IS DEPRECATED');
+            });
     }
 }
-
 
 export default QuestionRouter;

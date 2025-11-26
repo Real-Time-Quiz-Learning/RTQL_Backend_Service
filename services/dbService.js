@@ -1,4 +1,5 @@
 import process from 'process';
+import { URLSearchParams } from 'url';
 
 const POST = "POST";
 
@@ -38,9 +39,12 @@ class DBService {
 
     static dbEndpoint = process.env.DB_END;
 
-    // Does this need to be done more than once?
-    // Yes
-    // Will implement this method then
+    /**
+     * Transforms a question entity into the expected model format (with the responses basically).
+     * 
+     * @param {*} question question which we shall enhance to the model
+     * @returns 
+     */
     static async _mapQuestionEntityToModel(question) {
         if (!question.id)
             throw new Error('question requires id property');
@@ -70,6 +74,7 @@ class DBService {
 
         return question;
     }
+
 
     static async addNewUser(userJSON) {
 
@@ -112,6 +117,7 @@ class DBService {
         }
 
         try {
+            const url = new URL([DBService.dbEndpoint, 'question'].join('/'));
             const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint, {
                 method: POST,
                 headers: {
@@ -145,7 +151,8 @@ class DBService {
         }
 
         try {
-            const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint + "/" + questionID, {
+            const url = new URL([DBService.dbEndpoint, 'question', questionID].join('/'));
+            const response = await fetch(url, {
                 method: PUT,
                 headers: {
                     "Content-Type": "application/json"
@@ -175,7 +182,8 @@ class DBService {
         }
 
         try {
-            const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint + "/" + questionID, {
+            const url = new URL([DBService.dbEndpoint, 'question', questionID].join('/'));
+            const response = await fetch(url, {
                 method: DELETE,
                 headers: {
                     "Content-Type": "application/json"
@@ -195,6 +203,13 @@ class DBService {
         }
     }
 
+    /**
+     * Search for questions from a specific user.
+     * 
+     * @param {int} userID the user id for whom to retrieve questions
+     * @param {URLSearchParams} query additional search parameters
+     * @returns 
+     */
     static async getAllQuestions(userID, query) {
         const errorMsg = {
             error: true,
@@ -202,7 +217,8 @@ class DBService {
         }
 
         try {
-            const url = new URL(DBService.dbEndpoint + dbQuestionEndpoint);
+            // const url = new URL(DBService.dbEndpoint + dbQuestionEndpoint);
+            const url = new URL([DBService.dbEndpoint, 'question'].join('/'));
             url.searchParams.append('pid', userID);
 
             // Map the incoming query the new query
@@ -251,7 +267,8 @@ class DBService {
         }
         
         try {
-            const url = new URL(DBService.dbEndpoint + dbQuestionEndpoint);
+            // const url = new URL(DBService.dbEndpoint + dbQuestionEndpoint);
+            const url = new URL([DBService.dbEndpoint, 'question'].join('/'));
             url.searchParams.append('pid', userId);
             url.searchParams.append('id', questionId);
 
@@ -277,14 +294,17 @@ class DBService {
         }
     }
 
-    static async getAnswers(qid) {
+    static async getResponses(qid) {
         const errorMsg = {
             error: true,
             message: errorGettingAnswerMsg
         }
 
         try {
-            const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint + "?qid=" + qid);
+            const url = new URL([DBService.dbEndpoint, 'response'].join('/'));
+            url.searchParams.append('qid', qid);
+
+            const response = await fetch(url);
 
             if (!response.ok) {
                 return errorMsg;
@@ -297,8 +317,6 @@ class DBService {
         } catch (error) {
 
         }
-
-
     }
 
     static async saveAnswer(answer, questionID, correct) {
@@ -314,8 +332,8 @@ class DBService {
         }
 
         try {
-
-            const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint, {
+            const url = new URL([DBService.dbEndpoint, 'response'].join('/'));
+            const response = await fetch(url, {
                 method: POST,
                 headers: {
                     "Content-Type": "application/json"
@@ -336,8 +354,6 @@ class DBService {
         } catch (error) {
 
         }
-
-
     }
 
     static async updateResponse(response, responseID, correct) {
