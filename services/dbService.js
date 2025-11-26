@@ -46,7 +46,7 @@ class DBService {
      * @param {int} questionId test for ownership of this question
      * @returns 
      */
-    static async checkQuestionOwnership(userId, questionId) {
+    static async _checkQuestionOwnership(userId, questionId) {
         // Do you even own the question
         const res = await DBService.getQuestionById(userId, questionId);
 
@@ -58,9 +58,17 @@ class DBService {
         return res;
     }
 
-    static async checkResponseOwnership(userId, questionId, responseId) {
+    /**
+     * Test the users ownership & the response membership on a question.
+     * 
+     * @param {int} userId test this users ownership of the quetsion
+     * @param {int} questionId test the ownership of the question
+     * @param {int} responseId test that the repsonse is of the question
+     * @returns 
+     */
+    static async _checkResponseOwnership(userId, questionId, responseId) {
         // Do you even own the question?
-        const res1 = await DBService.checkQuestionOwnership(userId, questionId);
+        const res1 = await DBService._checkQuestionOwnership(userId, questionId);
         const test = res1.responses.some(r => r.id === responseId);
 
         if (!test)
@@ -181,7 +189,7 @@ class DBService {
         }
 
         try {
-            await DBService.checkQuestionOwnership(userID, questionID);     // test
+            await DBService._checkQuestionOwnership(userID, questionID);     // test
 
             const url = new URL([DBService.dbEndpoint, 'question', questionID].join('/'));
             const response = await fetch(url, {
@@ -219,7 +227,7 @@ class DBService {
         }
 
         try {
-            await DBService.checkQuestionOwnership(userID, questionID);     // test
+            await DBService._checkQuestionOwnership(userID, questionID);     // test
 
             const url = new URL([DBService.dbEndpoint, 'question', questionID].join('/'));
             const response = await fetch(url, {
@@ -346,7 +354,7 @@ class DBService {
         }
 
         try {
-            const question = await DBService.checkQuestionOwnership(userId, questionId);
+            const question = await DBService._checkQuestionOwnership(userId, questionId);
 
             // const url = new URL([DBService.dbEndpoint, 'response'].join('/'));
             // url.searchParams.append('qid', questionId);
@@ -375,7 +383,8 @@ class DBService {
      */
     static async getResponseById(userId, questionId, responseId) {
         try {
-            await DBService.checkQuestionOwnership(userId, questionId);
+            // await DBService._checkQuestionOwnership(userId, questionId);
+            await DBService._checkResponseOwnership(userId, questionId, responseId);
 
             const url = new URL([DBService.dbEndpoint, 'response'].join('url'));
             url.searchParams.append('qid', questionId);

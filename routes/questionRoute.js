@@ -179,6 +179,7 @@ class QuestionRouter {
                 res.status(200);
                 res.json({
                     message: "Here are some great answers!",
+                    qid: req.params.qid,
                     responses: dbResponse
                 });
             });
@@ -188,6 +189,27 @@ class QuestionRouter {
         Almost like a ... sub resource :0
         */
         this.router.route('/:qid/response/:id')
+            .get(async (req, res) => {
+                const userId = req.validUser.reponse.id;
+                const questionId = req.params.qid;
+                const responseId = req.params.id;
+
+                const dbResponseQ = await DBService.getResponseById(userId, questionId, responseId);
+
+                if (dbResponseQ.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponseQ.message
+                    });
+                    return;
+                }
+
+                res.status(200);
+                res.json({
+                    message: 'get response by id',
+                    data: dbResponseQ
+                });
+            })
             .put(async (req, res) => {
                 // decompose the request (hope everything is there!)
                 const rid = req.params.id;
