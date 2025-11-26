@@ -179,7 +179,7 @@ class QuestionRouter {
                 res.status(200);
                 res.json({
                     message: "Here are some great answers!",
-                    answers: dbResponse.response.data
+                    responses: dbResponse
                 });
             });
 

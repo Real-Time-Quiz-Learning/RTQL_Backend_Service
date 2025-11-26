@@ -50,24 +50,23 @@ class DBService {
         // Do you even own the question
         const res = await DBService.getQuestionById(userId, questionId);
 
-        if (res.error || res.response.data.length === 0)
+        console.log(res);
+
+        if (res.error)
             throw new Error('given question is not one that you own');
 
-        return true;
+        return res;
     }
 
     static async checkResponseOwnership(userId, questionId, responseId) {
         // Do you even own the question?
-        const res1 = await DBService.getQuestionById(userId, questionId);
-        if (res1.error || res1.response.data.length === 0)
-            throw new Error('given question is not one that you own');
+        const res1 = await DBService.checkQuestionOwnership(userId, questionId);
+        const test = res1.responses.some(r => r.id === responseId);
 
-        // Does this response exist on the question
-        const res2 = await DBService.getResponseById(questionId, responseId);
-        if (res2.error || res2.response.data.length === 0)
+        if (!test)
             throw new Error('given response does not exist on the question');
 
-        return true;
+        return res1;
     }
 
     /**
@@ -324,14 +323,15 @@ class DBService {
                 return errorMsg;
             }
 
-            const result = await response.json();
-
-            // Fetch question responses
-            
             console.log('[DBService] get question by id is happening');
-            console.log(result);
+            const result = await response.json();
+            // console.log('[DBService] db API call results', result);
 
-            return result;
+            if (result.error || result.response.data.length === 0)
+                throw new Error('such a question does not exist');
+
+            const question = await DBService._mapQuestionEntityToModel(result.response.data[0]);
+            return question;
 
         } catch (err) {
             console.log('[DBService] get questions by id error: ', err.message);
@@ -346,20 +346,17 @@ class DBService {
         }
 
         try {
-            await DBService.checkQuestionOwnership(userId, questionId);
+            const question = await DBService.checkQuestionOwnership(userId, questionId);
 
-            const url = new URL([DBService.dbEndpoint, 'response'].join('/'));
-            url.searchParams.append('qid', questionId);
+            // const url = new URL([DBService.dbEndpoint, 'response'].join('/'));
+            // url.searchParams.append('qid', questionId);
+            // const response = await fetch(url);
+            // if (!response.ok) {
+            //     return errorMsg;
+            // }
+            // const result = await response.json();
 
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                return errorMsg;
-            }
-
-            const result = await response.json();
-
-            return result;
+            return question.responses;
 
         } catch (error) {
             console.log('[DBService] error retrieving responses for a users question');
