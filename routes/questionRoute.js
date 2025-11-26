@@ -190,7 +190,7 @@ class QuestionRouter {
             .put(async (req, res) => {
                 // decompose the request (hope everything is there!)
                 const rid = req.params.id;
-                const response = req.body.response;
+                const response = req.body.rtext;
                 const correct = req.body.correct;
 
                 // save response

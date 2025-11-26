@@ -368,7 +368,9 @@ class DBService {
         }
 
         try {
-            const response = await fetch(DBService.dbEndpoint + dbAnswerEndpoint + "/" + responseID, {
+            console.log(postBody);
+            const url = new URL([DBService.dbEndpoint, 'response', responseID].join('/'));
+            const response = await fetch(url, {
                 method: PUT,
                 headers: {
                     "Content-Type": "application/json"
