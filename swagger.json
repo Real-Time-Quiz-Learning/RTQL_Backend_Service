@@ -1,1000 +1,868 @@
 {
-    "openapi": "3.0.4",
-    "info": {
-        "title": "RTQL API",
-        "description": "<h1>RTQL API</h1><p>Use RTQL's API to generate quiz questions!</p>",
-        "version": "1.0.0"
+  "openapi": "3.0.0",
+  "info": {
+    "title": "RTQL_Backend_Service",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3677/v1"
     },
-    "servers": [
-        {
-            "url": "http://64.181.233.131:3677",
-            "description": "RTQL API service base route."
-        },
-        {
-            "url": "http://localhost:3677",
-            "description": "RTQL API service base route if developing on a machine."
-        },
-        {
-            "url": "http://64.181.233.131:3677/api/v1",
-            "description": "RTQL API version 1 base route (proper)."
-        }
-    ],
-    "paths": {
-        "/login": {
-            "post": {
-                "tags": [
-                    "login"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/login_user"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/auth_details"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error logging in",
-                                        "value": {
-                                            "message": "Error logging in!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/signup": {
-            "post": {
-                "tags": [
-                    "signup"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/signup_user"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/auth_details"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error signing up",
-                                        "value": {
-                                            "message": "Error signing up!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/question/send": {
-            "post": {
-                "tags": [
-                    "question"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/send_question"
-                            },
-                            "examples": {
-                                "mars": {
-                                    "summary": "ask 1 question about the solar system.",
-                                    "value": {
-                                        "input": "questions about the solar system.",
-                                        "questions": 1
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "questions you requested with responses and the correct answer",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/send_question_response"
-                                },
-                                "examples": {
-                                    "mars": {
-                                        "summary": "ask for 1 question about the solar system.",
-                                        "value": {
-                                            "message": "Here are some great questions!",
-                                            "questions": [
-                                                {
-                                                    "question": "Which planet is known as the Red Planet?",
-                                                    "options": [
-                                                        "Jupiter",
-                                                        "Venus",
-                                                        "Earth",
-                                                        "Mars"
-                                                    ],
-                                                    "correct": 3
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error getting question",
-                                        "value": {
-                                            "message": "Error getting question!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/save": {
-            "post": {
-                "tags": [
-                    "question"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/question"
-                            },
-                            "examples": {
-                                "mars": {
-                                    "summary": "save a question about the solar system.",
-                                    "value": {
-                                        "question": "Which planet is known as the Red Planet?",
-                                        "options": [
-                                            "Jupiter",
-                                            "Venus",
-                                            "Earth",
-                                            "Mars"
-                                        ],
-                                        "correct": 3
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "saved question confirmation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/save_response"
-                                },
-                                "examples": {
-                                    "save": {
-                                        "summary": "save a question about the solar system.",
-                                        "value": {
-                                            "qid": 2,
-                                            "message": "Question saved successfully!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error saving question",
-                                        "value": {
-                                            "message": "Error saving question!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/getSaved": {
-            "get": {
-                "tags": [
-                    "question"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "all questions you have saved to the database",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/send_question_response"
-                                },
-                                "examples": {
-                                    "mars": {
-                                        "summary": "ask for 1 question about the solar system.",
-                                        "value": {
-                                            "message": "Here are some great questions!",
-                                            "questions": [
-                                                {
-                                                    "question": "Which planet is known as the Red Planet?",
-                                                    "options": [
-                                                        "Jupiter",
-                                                        "Venus",
-                                                        "Earth",
-                                                        "Mars"
-                                                    ],
-                                                    "correct": 3
-                                                },
-                                                {
-                                                    "question": "Which planet is do humans live on?",
-                                                    "options": [
-                                                        "Jupiter",
-                                                        "Venus",
-                                                        "Earth",
-                                                        "Mars"
-                                                    ],
-                                                    "correct": 2
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error getting questions",
-                                        "value": {
-                                            "message": "Error getting questions!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/getAnswers": {
-            "get": {
-                "tags": [
-                    "question"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "answers to a question you requested",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/get_answers_response"
-                                },
-                                "examples": {
-                                    "dogs": {
-                                        "summary": "get answers to a question about dogs",
-                                        "value": {
-                                            "message": "Here are some answers!",
-                                            "answers": [
-                                                {
-                                                    "id": 11,
-                                                    "qid": 9,
-                                                    "rtext": "Golden Retriever",
-                                                    "correct": 0
-                                                },
-                                                {
-                                                    "id": 12,
-                                                    "qid": 9,
-                                                    "rtext": "Beagle",
-                                                    "correct": 1
-                                                },
-                                                {
-                                                    "id": 13,
-                                                    "qid": 9,
-                                                    "rtext": "Husky",
-                                                    "correct": 0
-                                                },
-                                                {
-                                                    "id": 14,
-                                                    "qid": 9,
-                                                    "rtext": "Bulldog",
-                                                    "correct": 0
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error getting answers",
-                                        "value": {
-                                            "message": "Error getting answers!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "qid",
-                        "description": "id of the question whose responses/answers you want to get",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/update": {
-            "put": {
-                "tags": [
-                    "question"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/update_question"
-                            },
-                            "examples": {
-                                "number": {
-                                    "summary": "updated a question about numbers",
-                                    "value": {
-                                        "question": "What is my favourite number?",
-                                        "qid": 9
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "update question confirmation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                },
-                                "examples": {
-                                    "update": {
-                                        "summary": "update a question about numbers",
-                                        "value": {
-                                            "message": "Question updated successfully!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error updating question",
-                                        "value": {
-                                            "message": "Error updating question!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/delete": {
-            "delete": {
-                "tags": [
-                    "question"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/delete_question"
-                            },
-                            "examples": {
-                                "cats": {
-                                    "summary": "delete a question about cats",
-                                    "value": {
-                                        "qid": 31
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "deleted question confirmation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                },
-                                "examples": {
-                                    "delete": {
-                                        "summary": "delete a question about cats",
-                                        "value": {
-                                            "message": "Question deleted successfully!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error deleting question",
-                                        "value": {
-                                            "message": "Error deleting question!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/updateAnswer": {
-            "put": {
-                "tags": [
-                    "question"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/update_answer"
-                            },
-                            "examples": {
-                                "number": {
-                                    "summary": "update an answer about numbers",
-                                    "value": {
-                                        "response": "one hundred",
-                                        "rid": 9,
-                                        "correct": false
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "update question confirmation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                },
-                                "examples": {
-                                    "update": {
-                                        "summary": "update a question about numbers",
-                                        "value": {
-                                            "message": "Question updated successfully!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error updating answer",
-                                        "value": {
-                                            "message": "Error updating answer!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/question/deleteAnswer": {
-            "delete": {
-                "tags": [
-                    "question"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/delete_answer"
-                            },
-                            "examples": {
-                                "cats": {
-                                    "summary": "delete an answer about cats",
-                                    "value": {
-                                        "rid": 31
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "deleted answer confirmation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                },
-                                "examples": {
-                                    "delete": {
-                                        "summary": "delete an answer about cats",
-                                        "value": {
-                                            "message": "Answer deleted successfully!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/error_response"
-                                },
-                                "examples": {
-                                    "error": {
-                                        "summary": "error deleting answer",
-                                        "value": {
-                                            "message": "Error deleting answer!"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/admin": {
-            "get": {
-                "summary": "admin stats",
-                "tags": [
-                    "admin"
-                ],
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "admin",
-                        "headers": {
-                            "X-Powered-By": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Access-Control-Allow-Origin": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Content-Length": {
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            },
-                            "ETag": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Date": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Connection": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Keep-Alive": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "not an admin",
-                        "headers": {
-                            "X-Powered-By": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Access-Control-Allow-Origin": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Content-Length": {
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            },
-                            "ETag": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Date": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Connection": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Keep-Alive": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                "description": "Enter JWT Bearer token **_only_**"
-            }
-        },
-        "schemas": {
-            "login_user": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string"
-                    },
-                    "pass": {
-                        "type": "string"
-                    }
-                }
-            },
-            "signup_user": {
-                "type": "object",
-                "properties": {
-                    "email": {
-                        "type": "string"
-                    },
-                    "fname": {
-                        "type": "string"
-                    },
-                    "lname": {
-                        "type": "string"
-                    },
-                    "pass": {
-                        "type": "string"
-                    }
-                }
-            },
-            "auth_details": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    },
-                    "token": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    }
-                }
-            },
-            "send_question": {
-                "type": "object",
-                "properties": {
-                    "input": {
-                        "type": "string"
-                    },
-                    "questions": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "send_question_response": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    },
-                    "questions": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/question"
-                        }
-                    }
-                }
-            },
-            "question": {
-                "type": "object",
-                "properties": {
-                    "question": {
-                        "type": "string"
-                    },
-                    "options": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "correct": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "answer": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "qid": {
-                        "type": "integer"
-                    },
-                    "rtext": {
-                        "type": "string"
-                    },
-                    "correct": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "get_answers_response": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    },
-                    "answers": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/answer"
-                        }
-                    }
-                }
-            },
-            "save_response": {
-                "type": "object",
-                "properties": {
-                    "qid": {
-                        "type": "integer"
-                    },
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            },
-            "update_question": {
-                "type": "object",
-                "properties": {
-                    "question": {
-                        "type": "string"
-                    },
-                    "qid": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "delete_question": {
-                "type": "object",
-                "properties": {
-                    "qid": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "delete_answer": {
-                "type": "object",
-                "properties": {
-                    "rid": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "update_answer": {
-                "type": "object",
-                "properties": {
-                    "response": {
-                        "type": "string"
-                    },
-                    "rid": {
-                        "type": "integer"
-                    },
-                    "correct": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "error_response": {
-                "type": "object",
-                "properties": {
-                    "message": {
-                        "type": "string"
-                    }
-                }
-            }
-        }
+    {
+      "url": "http://64.181.233.131:3677/v1"
     }
+  ],
+  "paths": {
+    "/signup": {
+      "post": {
+        "summary": "signup for real",
+        "tags": [
+          "signup"
+        ],
+        "responses": {
+          "200": {
+            "description": "signup for real",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "default": "<integer>"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fname": {
+                    "type": "string"
+                  },
+                  "lname": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "pass": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "login for real",
+        "tags": [
+          "login"
+        ],
+        "responses": {
+          "200": {
+            "description": "login for real",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "default": "<integer>"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "pass": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/question/{qid}/response": {
+      "get": {
+        "summary": "get answers",
+        "tags": [
+          "question",
+          "response"
+        ],
+        "responses": {
+          "200": {
+            "description": "get answers",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "retrieves the answers (responses) for a particular question."
+      },
+      "parameters": [
+        {
+          "name": "qid",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        }
+      ]
+    },
+    "/question/{qid}/response/{id}": {
+      "put": {
+        "summary": "update question answer",
+        "tags": [
+          "question",
+          "response"
+        ],
+        "responses": {
+          "200": {
+            "description": "update question answer success",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "response": {
+                    "type": "string"
+                  },
+                  "rid": {
+                    "type": "integer"
+                  },
+                  "correct": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "qid",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        }
+      ],
+      "delete": {
+        "summary": "delete question answer",
+        "tags": [
+          "question",
+          "response"
+        ],
+        "responses": {
+          "200": {
+            "description": "delete question answer success",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/question": {
+      "post": {
+        "summary": "add question",
+        "tags": [
+          "question"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "deprecated": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "save question",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "default": "<integer>"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              }
+            }
+          }
+        },
+        "description": "saves a question for the user who is currently authorized.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "question": {
+                    "type": "string"
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "correct": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "get question",
+        "tags": [
+          "question"
+        ],
+        "parameters": [
+          {
+            "name": "qtext",
+            "in": "query",
+            "required": false,
+            "deprecated": false,
+            "schema": {}
+          },
+          {
+            "name": "verbose",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "deprecated": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "get question",
+            "headers": {
+              "X-Powered-By": {
+                "deprecated": false,
+                "schema": {}
+              },
+              "Access-Control-Allow-Origin": {
+                "deprecated": false,
+                "schema": {}
+              },
+              "Content-Length": {
+                "deprecated": false,
+                "schema": {}
+              },
+              "ETag": {
+                "deprecated": false,
+                "schema": {}
+              },
+              "Date": {
+                "deprecated": false,
+                "schema": {}
+              },
+              "Connection": {
+                "deprecated": false,
+                "schema": {}
+              },
+              "Keep-Alive": {
+                "deprecated": false,
+                "schema": {}
+              }
+            }
+          }
+        },
+        "description": "retrieves the questions for the user who is currently authorized."
+      }
+    },
+    "/question/{id}": {
+      "put": {
+        "summary": "update question",
+        "tags": [
+          "question"
+        ],
+        "responses": {
+          "200": {
+            "description": "update question",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "use this question to update a question as the user who is currently authenticated.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "qid": {
+                    "type": "integer"
+                  },
+                  "question": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "deprecated": false,
+          "schema": {}
+        }
+      ],
+      "delete": {
+        "summary": "delete question",
+        "tags": [
+          "question"
+        ],
+        "responses": {
+          "200": {
+            "description": "delete question",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin": {
+      "get": {
+        "summary": "admin stats",
+        "tags": [
+          "admin"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "admin",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "default": "<integer>"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "not an admin",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer",
+                  "default": "<integer>"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string",
+                  "default": "<string>"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+        "security": [
+            {
+                "bearerAuth": []
+            }
+        ]
+    },
+    "/model": {
+      "post": {
+        "summary": "new question",
+        "tags": [
+          "model"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "deprecated": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "new question",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "Use this endpoint to get questions from the model.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "input": {
+                    "type": "string"
+                  },
+                  "questions": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
 }

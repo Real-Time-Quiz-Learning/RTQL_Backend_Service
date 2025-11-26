@@ -80,23 +80,22 @@ class BackendServer {
 
     this.app.use(this.b_serviceMiddleware);
 
-    this.app.use('/login', this.adminService.b_apiStatsMiddleware, this.loginRouter.getRouter());
-    this.app.use('/signup', this.adminService.b_apiStatsMiddleware, this.signupRouter.getRouter());
-    this.app.use('/model', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, ModelRouter);
-    this.app.use('/question', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, this.questionRouter.getRouter());
-    this.app.use('/admin', AuthService.validateToken, AdminRouter);
-
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    this.app.use('/v1/login', this.adminService.b_apiStatsMiddleware, this.loginRouter.getRouter());
+    this.app.use('/v1/signup', this.adminService.b_apiStatsMiddleware, this.signupRouter.getRouter());
+    this.app.use('/v1/model', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, ModelRouter);
+    this.app.use('/v1/question', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, this.questionRouter.getRouter());
+    this.app.use('/v1/admin', AuthService.validateToken, AdminRouter);
+    this.app.use('/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     // Update this once responseRouter.js is created --> for dealing with student responses to questions
-    this.app.get('/response', (req, res) => {
-      res.send('response route woohoo')
-    });
+    // this.app.get('/response', (req, res) => {
+    //   res.send('response route woohoo')
+    // });
 
-    // Update this once roomRouter.js is created --> for dealing with creating a room or whatever
-    this.app.get('/room', (req, res) => {
-      res.send('room route woohoo')
-    });
+    // // Update this once roomRouter.js is created --> for dealing with creating a room or whatever
+    // this.app.get('/room', (req, res) => {
+    //   res.send('room route woohoo')
+    // });
 
     // Register sockets
     this.teacher.use(AuthService.s_validateToken);

@@ -12,7 +12,7 @@ export class AdminService {
         this._apiStats['totalRequests'] += 1;
 
         // Endpoint stats
-        let endpoint = req.originalUrl.split('?')[0];            // strip the query params
+        let endpoint = req.url;
         let endpointStatsIdx = this._apiStats.endpointStats.findIndex(e => e.endpoint === endpoint);
 
         if (endpointStatsIdx > -1) {
