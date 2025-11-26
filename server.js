@@ -18,6 +18,7 @@ import LoginRouter from './routes/loginRoute.js';
 import SignupRouter from './routes/signupRoute.js';
 import QuestionRouter from './routes/questionRoute.js';
 import { AdminRouter } from './routes/adminRoute.js';
+import { ModelRouter } from './routes/modelRoute.js';
 
 /**
  * The server handles everything.
@@ -80,12 +81,10 @@ class BackendServer {
     this.app.use(this.b_serviceMiddleware);
 
     this.app.use('/login', this.adminService.b_apiStatsMiddleware, this.loginRouter.getRouter());
-
     this.app.use('/signup', this.adminService.b_apiStatsMiddleware, this.signupRouter.getRouter());
-
+    this.app.use('/model', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, ModelRouter);
     this.app.use('/question', AuthService.validateToken, this.adminService.b_apiStatsMiddleware, this.questionRouter.getRouter());
-      
-    this.app.use('/admin', AdminRouter);
+    this.app.use('/admin', AuthService.validateToken, AdminRouter);
 
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

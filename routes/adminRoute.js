@@ -6,8 +6,6 @@ const ADMIN_ACCESS_REQUIRED = 'Admin access required to view API statistics.';
 
 router.use(express.json());
 
-router.use(AuthService.validateToken);
-
 router.route('/')
     .get((req, res) => {
         const as = req.services.adminService;

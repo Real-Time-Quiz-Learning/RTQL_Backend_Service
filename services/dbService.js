@@ -38,6 +38,39 @@ class DBService {
 
     static dbEndpoint = process.env.DB_END;
 
+    // Does this need to be done more than once?
+    // Yes
+    // Will implement this method then
+    static async _mapQuestionEntityToModel(question) {
+        if (!question.id)
+            throw new Error('question requires id property');
+        if (!question.qtext)
+            throw new Error('question requires qtext property');
+        if (!question.pid)
+            throw new Error('question requires pid property');
+
+        // retrieve responses
+        const url = new URL([DBService.dbEndpoint, 'response'].join('/'));
+        url.searchParams.append('qid', question.id);
+
+        // console.log(url.href);
+
+        const resp = await fetch(url);
+        const respJson = await resp.json();
+
+        // Bad response or the response was undefined
+        if (!resp.ok)
+            throw new Error('error retrieving responses for question');
+        if (respJson.response === undefined || respJson.response.data === undefined)
+            throw new Error('no responses for such a question');
+        
+        question.responses = respJson.response.data;
+
+        console.log(JSON.stringify(question));
+
+        return question;
+    }
+
     static async addNewUser(userJSON) {
 
         const errorMsg = {
@@ -162,28 +195,86 @@ class DBService {
         }
     }
 
-    static async getAllQuestions(userID) {
+    static async getAllQuestions(userID, query) {
         const errorMsg = {
             error: true,
             message: errorGettingQuestionsMsg
         }
 
         try {
-            const response = await fetch(DBService.dbEndpoint + dbQuestionEndpoint + "?pid=" + userID);
+            const url = new URL(DBService.dbEndpoint + dbQuestionEndpoint);
+            url.searchParams.append('pid', userID);
+
+            // Map the incoming query the new query
+            Object.entries(query).forEach(([key, value]) => {
+                url.searchParams.append(key, value);
+            });
+
+            console.log('[DBService] getting all questions');
+
+            const response = await fetch(url);
 
             if (!response.ok) {
                 return errorMsg;
             }
 
+            // Map the entity to the model
             const result = await response.json();
+            const questionEntities = result.response.data;
+            const questions = Promise.all(questionEntities.map(DBService._mapQuestionEntityToModel));
+
+            // console.log(questions);
+            // for (const questionEntity of questionEntities) {
+            //     console.log(questionEntity);
+            //     const questionModel = DBService._mapQuestionEntityToModel(questionEntity);
+            // }
+            // return result;
+
+            return questions;
+
+        } catch (error) {
+            console.log('[DBService] error retrieving questions');
+        }
+    }
+
+    /**
+     * retrieves a question by the id for user.
+     * 
+     * @param {integer} userId user id integer retrieve questions for this user
+     * @param {integer} questionId question id retrieve question bt this id
+     * @returns 
+     */
+    static async getQuestionById(userId, questionId) {
+        const errorMsg = {
+            error: true,
+            message: errorGettingQuestionsMsg
+        }
+        
+        try {
+            const url = new URL(DBService.dbEndpoint + dbQuestionEndpoint);
+            url.searchParams.append('pid', userId);
+            url.searchParams.append('id', questionId);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                console.log('[DBService] get questions by id failed');
+                return errorMsg;
+            }
+
+            const result = await response.json();
+
+            // Fetch question responses
+            
+            console.log('[DBService] get question by id is happening');
+            console.log(result);
 
             return result;
 
-        } catch (error) {
-
+        } catch (err) {
+            console.log('[DBService] get questions by id error: ', err.message);
+            return errorMsg;
         }
-
-
     }
 
     static async getAnswers(qid) {
@@ -209,7 +300,6 @@ class DBService {
 
 
     }
-
 
     static async saveAnswer(answer, questionID, correct) {
         const errorMsg = {
@@ -281,10 +371,7 @@ class DBService {
             console.log("in the catch block :( errorMsg: " + error);
             return errorMsg;
         }
-
-
     }
-
 
     static async deleteResponse(responseID) {
         const errorMsg = {
@@ -312,10 +399,6 @@ class DBService {
             return errorMsg;
         }
     }
-
-
-
-
 }
 
 export default DBService;

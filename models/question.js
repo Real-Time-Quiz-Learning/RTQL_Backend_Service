@@ -1,7 +1,25 @@
 export class Question {
-    constructor(question, options, correct) {
-        this.question = question;
-        this.options = options;
-        this.correct = correct;
+    /**
+     * Creates a question.
+     * 
+     * @param {int} id the id of the question
+     * @param {int} pid the id of the user who created the question
+     * @param {string} qtext question text
+     * @param {Array<Response>} responses response array
+     */
+    constructor(id, pid, question, responses) {
+        this.id = id;
+        this.pid = pid;
+        this.qtext = question;
+        this.responses = responses || [];
+    }
+
+    /**
+     * Adds a response to the list of responses.
+     * 
+     * @param {Response} response 
+     */
+    addResponse(response) {
+        this.responses.push(response);
     }
 }

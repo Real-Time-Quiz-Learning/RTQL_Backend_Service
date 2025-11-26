@@ -7,6 +7,8 @@ import ModelService from '../services/modelService.js';
  * QuestionRouter class handles HTTP requests sent to the API at the /question route.
  */
 class QuestionRouter {
+    static questionsMessage = 'user questions endpoint';
+
     constructor() {
         this.router = express.Router();
         this.router.use(express.json());
@@ -18,37 +20,29 @@ class QuestionRouter {
     }
 
     questionRoute() {
-        this.router.route('/send/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION SEND route!')
-            })
-            .post(async (req, res) => {
-                const questionPrompt = req.body;
+        this.router.route('/')
+            .get(async (req, res) => {
+                const userID = req.validUser.response.id;
 
-                const modelResponse = await ModelService.sendQuestion(questionPrompt);
+                console.log("The userID is: " + userID);
 
-                if (modelResponse.error) {
+                const dbResponse = await DBService.getAllQuestions(userID, req.query);
+
+                if (dbResponse.error) {
                     res.status(400);
                     res.json({
-                        message: modelResponse.message
+                        message: dbResponse.message
                     })
                     return;
                 }
 
                 res.status(200);
                 res.json({
-                    message: "Here are some great questions!",
-                    questions: modelResponse.questions
+                    message: QuestionRouter.questionsMessage,
+                    questions: dbResponse
                 })
-            }
-            );
-
-        this.router.route('/save/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION SAVE route!')
             })
             .post(async (req, res) => {
-
                 // decompose the request (hope everything is there!)
                 const question = req.body.question;
                 const answers = req.body.options;
@@ -89,72 +83,42 @@ class QuestionRouter {
                 });
             });
 
-        this.router.route('/getSaved/')
+        this.router.route('/:id')
             .get(async (req, res) => {
+                const questionId = req.params.id;
+                const userId = req.validUser.response.id;
 
-                const userID = req.validUser.response.id;
-                console.log("The userID is: " + userID);
-
-                const dbResponse = await DBService.getAllQuestions(userID);
+                const dbResponse = await DBService.getQuestionById(userId, questionId);
 
                 if (dbResponse.error) {
                     res.status(400);
                     res.json({
                         message: dbResponse.message
-                    })
+                    });
                     return;
                 }
 
-                res.status(200);
-                res.json({
-                    message: "Here are some great questions!",
-                    questions: dbResponse.response.data
-                })
-            }
-            );
-
-        this.router.route('/getAnswers')
-            .get(async (req, res) => {
-
-                const qid = req.query.qid;
-
-                const userID = req.validUser.response.id;
-                console.log("The userID is: " + userID);
-
-                // send ID to db to get all questions
-                const dbResponse = await DBService.getAnswers(qid);
-
-                // TO DO: finish this part
-
-                if (dbResponse.error) {
-                    res.status(400);
-                    res.json({
-                        message: dbResponse.message
-                    })
-                    return;
-                }
+                console.log(JSON.stringify(dbResponse));
 
                 res.status(200);
                 res.json({
-                    message: "Here are some great answers!",
-                    answers: dbResponse.response.data
-                })
-            }
-            );
-
-
-        this.router.route('/update/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION UPDATE route!')
+                    message: 'question retrieved',
+                    data: dbResponse.response.data
+                });
             })
+            /*
+            NOTES
+            - accept here too an options list?
+            - would need to reference the actual rid of the response in the db
+            - this would also require validation that infact the rid of the presented option
+            corresponds to the qid incoming
+            - possible, perhaps not plausible
+            */
             .put(async (req, res) => {
-
                 // decompose the request (hope everything is there!)
-                const question = req.body.question;
-                const qid = req.body.qid;
-
-                // get user ID from token response
+                const question = req.body.qtext;
                 const userID = req.validUser.response.id;
+                const qid = req.params.id;
 
                 // save response
                 const dbResponseQ = await DBService.updateQuestion(question, userID, qid);
@@ -169,20 +133,11 @@ class QuestionRouter {
 
                 res.status(200);
                 res.json({
-                    message: "Just saved some great questions!"
-                })
-            }
-            );
-
-        this.router.route('/delete/')
-            .get((req, res) => {
-                res.send('Hello World at the QUESTION DELETE route!')
+                    message: 'update question'
+                });
             })
             .delete(async (req, res) => {
-
-                const qid = req.body.qid;
-
-                // save response
+                const qid = req.params.id;
                 const dbResponseQ = await DBService.deleteQuestion(qid);
 
                 if (dbResponseQ.error) {
@@ -192,11 +147,63 @@ class QuestionRouter {
                     })
                     return;
                 }
+                
+                res.status(200);
+                res.json({
+                    message: 'delete question'
+                })
+            });
+
+        this.router.route('/:id/response')
+            .get(async (req, res) => {
+                const qid = req.params.qid;
+                const userID = req.validUser.response.id;
+                const dbResponse = await DBService.getAnswers(qid);
+
+                // TODO, validate that the user requires this
+
+                if (dbResponse.error) {
+                    res.status(400);
+                    res.json({
+                        message: dbResponse.message
+                    })
+                    return;
+                }
 
                 res.status(200);
                 res.json({
-                    message: "Just deleted your question!"
-                })
+                    message: "Here are some great answers!",
+                    answers: dbResponse.response.data
+                });
+            });
+
+        this.router.route('/send/')
+            .post(async (req, res) => {
+                res.status(499);
+                res.send('THIS ROUTE IS DEPRECATED');
+            });
+        this.router.route('/getSaved/')
+            .get(async (req, res) => {
+                res.status(499);
+                res.send('THIS ENDPOINT IS DEPRECATED');
+            });
+
+        this.router.route('/getAnswers')
+            .get(async (req, res) => {
+                res.status(499);
+                res.send('THIS ENDPOINT IS DEPRECATED');
+            });
+
+        this.router.route('/update/')
+            .put(async (req, res) => {
+                res.status(499);
+                res.send('THIS ENDPOINT IS DEPRECATED');
+            });
+
+        this.router.route('/delete/')
+            .delete(async (req, res) => {
+
+
             }
             );
 
