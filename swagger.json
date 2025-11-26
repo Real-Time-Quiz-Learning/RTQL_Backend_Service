@@ -1164,15 +1164,6 @@
             }
           }
         },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
         "security": [
           {
             "bearerAuth": []
