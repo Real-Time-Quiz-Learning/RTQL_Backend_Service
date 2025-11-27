@@ -108,7 +108,9 @@ export class TeacherSocket {
 
             // Bro was correct?
             for(let answer of question.answers) {
-                let correct = question.correct === answer.response;
+                let response = question.responses.filter(r => r.id === answer.responseId)[0];
+                let correct = new Boolean(response.correct);
+
                 this.sio.to(answer.clientId).emit('questionClosed', correct);
             }
 

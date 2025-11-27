@@ -2,25 +2,15 @@ import { Question } from '../models/question.js';
 import { Response } from '../models/response.js';
 
 const errorRoomConnectionIDMsg = "No room with the given connection ID";
-
 const errorRoomDNEMsg = "No such room exists";
-
 const errorNoQuestionMsg = "There is no question";
-
 const errorNoQuestionIdMsg = 'There is not question id';
-
 const errorNoOptionsMsg = "There are no options for this question";
-
 const errorNoCorrectMsg = "There are no correct answers for this question";
-
 const errorInactiveQuestionDNEMsg = "Can't make question inactive, no question exists";
-
 const errorNoQforResponseMsg = "There is no question for this response";
-
 const errorNoGuessforQMsg = "There is no guess for this question";
-
 const errorUndefinedClientMsg = "Question submitted for undefined client";
-
 const errorInactiveQMsg = "The question you are trying to respond to is now inactive";
 
 export class QuizRoomService {
@@ -73,9 +63,10 @@ export class QuizRoomService {
         for (const question of quizRoom.questions) {
             let qCorrectAnswers = 0;
             let qTotalAnswers = 0;
+            let qCorrectResponse = question.responses.filter(r => r.correct)[0];
 
             for (const answer of question.answers) {
-                if (question.correct === answer.response) {
+                if (qCorrectResponse.id === answer.responseId) {
                     correctAnswers++;
                     qCorrectAnswers++;
                 }
@@ -172,16 +163,16 @@ export class QuizRoomService {
      * specific response id submitted to the question.
      * 
      * @param {string} roomConnectionId the unique connection id
-     * @param {number} answer the unique published id
+     * @param {*} answer the unique published id
      */
     addQuestionResponse(roomConnectionId, answer) {
         this._validateRoomConnectionId(roomConnectionId);
 
-        if (answer.qid === undefined)
+        if (answer.publishedId === undefined)
             throw new Error(errorNoQforResponseMsg);
         // if (answer.response === undefined)
         //     throw new Error(errorNoGuessforQMsg);
-        if (answer.id === undefined)
+        if (answer.responseId === undefined)
             throw new Error(errorNoGuessforQMsg);
         if (answer.clientId === undefined)
             console.log(errorUndefinedClientMsg);
@@ -190,7 +181,7 @@ export class QuizRoomService {
 
         // let respondingTo = this.rooms[roomConnectionId].questions[answer.question];
         let respondingTo = this.rooms[roomConnectionId].questions
-            .filter(c => c.publishedId === Number.parseInt(answer.qid))[0];
+            .filter(c => c.publishedId === Number.parseInt(answer.publishedId))[0];
 
         console.log(JSON.stringify(respondingTo));
 
