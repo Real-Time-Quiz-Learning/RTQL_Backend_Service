@@ -40,7 +40,7 @@ export class AdminService {
         } else {
             let userStats = {};
             userStats.id = userId;
-            userStats.email = validUser ? validUser.response.email : null;
+            userStats.email = validUser ? validUser.response.email : 'anonymous';
             userStats.totalRequests = 1;
 
             this._apiStats.userStats.push(userStats);
