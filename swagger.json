@@ -14,7 +14,7 @@
       "description": "Development server"
     },
     {
-      "url": "https://64.181.233.131:3677/v1",
+      "url": "http://64.181.233.131:3677/v1",
       "description": "Production server"
     }
   ],
@@ -71,6 +71,22 @@
                   "default": "<string>"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signupResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "signup request",
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJpYXQiOjE3NjM5NTk0NjEsImV4cCI6Njc2Nzg1MzE2MzYyMjh9.Fhc_IVuNukGam_9vnYRNyIct3b1-RQ9dtEVt0QckK9A",
+                      "email": "admin@admin.com"
+                    }
+                  }
+                }
+              }
             }
           }
         },
@@ -78,21 +94,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "fname": {
-                    "type": "string"
-                  },
-                  "lname": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "pass": {
-                    "type": "string"
-                  }
+                "$ref": "#/components/schemas/signup"
+              },
+              "examples": {
+                "default": {
+                  "fname": "joe",
+                  "lname": "schmoe",
+                  "email": "admin@admin.com",
+                  "pass": "111"
                 }
               }
             }
@@ -152,6 +161,22 @@
                   "default": "<string>"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loginResponse"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "Login success!",
+                      "token": "TOKEN",
+                      "email": "admin@admin.com"
+                    }
+                  }
+                }
+              }
             }
           }
         },
@@ -159,15 +184,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "pass": {
-                    "type": "string"
-                  }
+                "$ref": "#/components/schemas/login"
+              },
+              "examples": {
+                "default": {
+                  "email": "admin@admin.com",
+                  "pass": "111"
                 }
               }
             }
@@ -214,6 +236,47 @@
                 "deprecated": false,
                 "schema": {}
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/responsesForQuestion"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "Here are some great answers!",
+                      "qid": "144",
+                      "responses": [
+                        {
+                          "id": 542,
+                          "qid": 144,
+                          "rtext": "Questions",
+                          "correct": 0
+                        },
+                        {
+                          "id": 543,
+                          "qid": 144,
+                          "rtext": "Sol",
+                          "correct": 0
+                        },
+                        {
+                          "id": 544,
+                          "qid": 144,
+                          "rtext": "Planets",
+                          "correct": 1
+                        },
+                        {
+                          "id": 545,
+                          "qid": 144,
+                          "rtext": "The sun",
+                          "correct": 0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -252,6 +315,20 @@
               "Keep-Alive": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/questionNotOwned"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "given question is not one that you own"
+                    }
+                  }
                 }
               }
             }
@@ -319,6 +396,28 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/response"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "get response by id",
+                      "data": [
+                        {
+                          "id": 542,
+                          "qid": 144,
+                          "rtext": "Questions",
+                          "correct": 0
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -357,6 +456,25 @@
               "Keep-Alive": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/questionNotOwned"
+                },
+                "examples": {
+                  "questionNotOwned": {
+                    "value": {
+                      "message": "given question is not one that you own"
+                    }
+                  },
+                  "responseNotOnQuestion": {
+                    "value": {
+                      "message": "given response does not exist on the question"
+                    }
+                  }
                 }
               }
             }
@@ -430,6 +548,20 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/message"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "Just updated that answer!"
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -462,6 +594,25 @@
               "Keep-Alive": {
                 "deprecated": false,
                 "schema": {}
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/message"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "given question is not one that you own"
+                    }
+                  },
+                  "responseNotOnQuestion": {
+                    "value": {
+                      "message": "given response does not exist on the question"
+                    }
+                  }
+                }
               }
             }
           }
@@ -537,6 +688,20 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/message"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "delete response by id"
+                    }
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -569,6 +734,25 @@
               "Keep-Alive": {
                 "deprecated": false,
                 "schema": {}
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/message"
+                },
+                "examples": {
+                  "questionNotOwned": {
+                    "value": {
+                      "message": "given question is not one that you own"
+                    }
+                  },
+                  "responseNotOnQuestion": {
+                    "value": {
+                      "message": "given response does not exist on the question"
+                    }
+                  }
+                }
               }
             }
           }
@@ -639,6 +823,21 @@
                 "schema": {
                   "type": "string",
                   "default": "<string>"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/inputQuestion"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "id": 151,
+                      "message": "Just saved some great questions!"
+                    }
+                  }
                 }
               }
             }
@@ -1255,6 +1454,143 @@
     }
   },
   "components": {
+    "schemas": {
+      "signup": {
+        "type": "object",
+        "properties": {
+          "fname": {
+            "type": "string"
+          },
+          "lname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "pass": {
+            "type": "string"
+          }
+        }
+      },
+      "signupResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "pass": {
+            "type": "string"
+          }
+        }
+      },
+      "loginResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "responsesForQuestion": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "qid": {
+            "type": "string"
+          },
+          "responses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "qid": {
+                  "type": "integer"
+                },
+                "rtext": {
+                  "type": "string"
+                },
+                "correct": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "questionNotOwned": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "message": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "qid": {
+                  "type": "integer"
+                },
+                "rtext": {
+                  "type": "string"
+                },
+                "correct": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
