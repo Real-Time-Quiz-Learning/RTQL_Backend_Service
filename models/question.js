@@ -5,7 +5,7 @@ export class Question {
      * @param {int} id the id of the question
      * @param {int} pid the id of the user who created the question
      * @param {string} qtext question text
-     * @param {Array<Response>} responses response array
+     * @param {Response[]} responses response array
      */
     constructor(id, pid, question, responses) {
         this.id = id;
