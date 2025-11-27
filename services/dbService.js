@@ -89,11 +89,11 @@ class DBService {
      * @returns 
      */
     static async _mapQuestionEntityToModel(question) {
-        if (!question.id)
+        if (question.id === undefined)
             throw new Error('question requires id property');
-        if (!question.qtext)
+        if (question.qtext === undefined)
             throw new Error('question requires qtext property');
-        if (!question.pid)
+        if (question.pid === undefined)
             throw new Error('question requires pid property');
 
         // retrieve responses
@@ -339,7 +339,7 @@ class DBService {
 
             console.log('[DBService] get question by id is happening');
             const result = await response.json();
-            // console.log('[DBService] db API call results', result);
+            console.log('[DBService] db API call results', JSON.stringify(result));
 
             if (result.error || result.response.data.length === 0)
                 throw new Error('such a question does not exist');

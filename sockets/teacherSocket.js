@@ -21,24 +21,24 @@ export class TeacherSocket {
         this.sio.emit('outgoing', message);
     }
 
-    quizRoomCreate() {
-        console.log(`creating a new quiz room: ${this.socket.id}`);
+    quizRoomCreate(socket) {
+        console.log(`creating a new quiz room: ${socket.id}`);
         try {
-            let roomId = this.socket.id;
+            let roomId = socket.id;
 
-            this.socket.join(roomId);
-            this.quizRoomService.createAQuizRoom(this.socket.id);
-            this.tio.to(this.socket.id).emit('quizRoomCreated', roomId);
+            socket.join(roomId);
+            this.quizRoomService.createAQuizRoom(socket.id);
+            this.tio.to(socket.id).emit('quizRoomCreated', roomId);
 
         } catch (err) {
-            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    quizRoomDestroy(user) {
-        console.log(`destroying the quiz room ${this.socket.id}`);
+    quizRoomDestroy(socket) {
+        console.log(`destroying the quiz room ${socket.id}`);
         try {
-            let roomId = this.socket.id;
+            let roomId = socket.id;
             let quizStats = this.quizRoomService.getQuizRoomStats(roomId);
 
             console.log(JSON.stringify(quizStats));
@@ -50,24 +50,24 @@ export class TeacherSocket {
             this.quizRoomService.deleteAQuizRoom(roomId);
 
             console.log('WE HAVE INITIATED THE TEARDOWN IT IS ALL OVER NOW 🔥🔥🧨🧨💥💥🧨💣💣💣🧨💥🔥');
-            console.log(JSON.stringify(this.quizRoomService.rooms));
+            // console.log(JSON.stringify(this.quizRoomService.rooms));
 
         } catch (err) {
-            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    quizRoomStats(roomId) {
+    quizRoomStats(socket, roomId) {
         console.log(`getting quiz stats for room: ${roomId}`);
         try {
             let quizStats = this.quizRoomService.getQuizRoomStats(roomId);
             this.tio.to(roomId).emit('quizStats', quizStats);
         } catch (err) {
-            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    postQuizQuestion(roomId, question) {
+    postQuizQuestion(socket, roomId, question) {
         console.log(`${roomId}: ${JSON.stringify(question)}`);
         try {
             let addedQuestion = this.quizRoomService.addQuestion(roomId, question);
@@ -78,12 +78,12 @@ export class TeacherSocket {
             this.sio.to(roomId).emit('questionPosted', addedQuestion);
 
         } catch (err) {
-            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    postQuizAnswer(roomId, answer) {
-        console.log(`${this.socket.id}, answer: ${JSON.stringify(answer)}`);
+    postQuizAnswer(socket, roomId, answer) {
+        console.log(`${socket.id}, answer: ${JSON.stringify(answer)}`);
         try {
             this.quizRoomService.addQuestionResponse(roomId, answer);
 
@@ -93,12 +93,12 @@ export class TeacherSocket {
             this.sio.to(roomId).emit('responsePosted', answer);
 
         } catch (err) {
-            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    makeQuizQuestionInactive(roomId, questionId) {
-        console.log(`${this.socket.id}, roomId: ${roomId}, questionId: ${questionId}`);
+    makeQuizQuestionInactive(socket, roomId, questionId) {
+        console.log(`${socket.id}, roomId: ${roomId}, questionId: ${questionId}`);
         try {
             let question = this.quizRoomService.makeAQuestionInactive(roomId, questionId);
 
@@ -117,20 +117,34 @@ export class TeacherSocket {
             this.sio.to(roomId).emit('questionRemoved', question);
 
         } catch (err) {
-            this.tio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.tio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
     registerHandlers(socket) {
-        this.socket = socket;
-
-        socket.on('incoming', this.b_incoming);
-        socket.on('quizRoomCreate', this.b_quizRoomCreate);
-        socket.on('quizRoomPostQuestion', this.b_quizRoomPostQuestion);
-        socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
-        socket.on('quizRoomQuestionInactive', this.b_quizRoomMakeQuestionInactive);
-        socket.on('quizRoomDestroy', this.b_quizRoomDestroy);
-        socket.on('quizRoomStats', this.b_quizRoomStats);
-        socket.on('disconnect', this.b_quizRoomDestroy);
+        socket.on('incoming', (incoming) => {
+            this.b_incoming(socket, incoming);
+        });
+        socket.on('quizRoomCreate', () => {
+            this.b_quizRoomCreate(socket);
+        });
+        socket.on('quizRoomPostQuestion', (roomId, question) => {
+            this.b_quizRoomPostQuestion(socket, roomId, question);
+        });
+        socket.on('quizRoomPostQuestionAnswer', (roomId, answer) => {
+            this.b_quizRoomPostQuestionAnswer(socket, roomId, answer);
+        });
+        socket.on('quizRoomQuestionInactive', (roomId, questionId) => {
+            this.b_quizRoomMakeQuestionInactive(socket, roomId, questionId);
+        });
+        socket.on('quizRoomDestroy', () => {
+            this.b_quizRoomDestroy(socket);
+        });
+        socket.on('quizRoomStats', (roomId) => {
+            this.b_quizRoomStats(socket, roomId);
+        });
+        socket.on('disconnect', () => {
+            this.b_quizRoomDestroy(socket);
+        });
     }
 }

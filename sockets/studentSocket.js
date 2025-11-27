@@ -16,14 +16,14 @@ export class StudentSocket {
         this.io.emit('outgoing', message);
     }
 
-    quizRoomJoin(roomId, nickname) {
-        console.log(`${this.socket.id} joins ${roomId} w/ nickname ${nickname}`);
-        console.log(typeof nickname);
+    quizRoomJoin(socket, roomId, nickname) {
+        console.log(`${socket.id} joins ${roomId} w/ nickname ${nickname}`);
+        // console.log(typeof nickname);
         try {
-            this.socket.join(roomId);
+            socket.join(roomId);
 
             // USE THE SERVICE TO IDENTIFY THE ROOM CREATED FOR THIS CONNECTION
-            let clientId = this.socket.id;
+            let clientId = socket.id;
             let snick = this.quizRoomService.addClientToQuizRoom(roomId, clientId, nickname);
 
             console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
@@ -32,12 +32,12 @@ export class StudentSocket {
             this.tio.to(roomId).emit('userJoined', snick);
 
         } catch (err) {
-            this.sio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.sio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    quizRoomLeave(roomId) {
-        console.log(`${this.socket.id} leaves ${roomId}`);
+    quizRoomLeave(socket, roomId) {
+        console.log(`${socket.id} leaves ${roomId}`);
         try {
             this.socket.leave(roomId);
 
@@ -45,15 +45,15 @@ export class StudentSocket {
             this.sio.to(roomId).emit('userLeaves', nickname);
             this.tio.to(roomId).emit('userLeaves', nickname);
         } catch (err) {
-            this.sio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.sio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
-    postQuizAnswer(roomId, answer) {
-        console.log(`${this.socket.id}, answer: ${JSON.stringify(answer)}`);
+    postQuizAnswer(socket, roomId, answer) {
+        console.log(`${socket.id}, answer: ${JSON.stringify(answer)}`);
         try {
             // USE THE SERVICE TO CHECK THAT THE INCOMING RESPONSE TO A QUESTION IS CORRECT.
-            answer.clientId = this.socket.id;
+            answer.clientId = socket.id;
             this.quizRoomService.addQuestionResponse(roomId, answer);
 
             console.log(JSON.stringify(this.quizRoomService.getQuizRoom(roomId)));
@@ -62,16 +62,22 @@ export class StudentSocket {
             this.sio.to(roomId).emit('responsePosted', answer);
 
         } catch (err) {
-            this.sio.to(this.socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
+            this.sio.to(socket.id).emit('rtqlMessage', new RtqlMessage(err.message, 'error'));
         }
     }
 
     registerHandlers(socket) {
-        this.socket = socket;
-
-        socket.on('incoming', this.b_incoming);
-        socket.on('quizRoomJoin', this.b_quizRoomJoin);
-        socket.on('quizRoomLeave', this.b_quizRoomLeave);
-        socket.on('quizRoomPostQuestionAnswer', this.b_quizRoomPostQuestionAnswer);
+        socket.on('incoming', (incoming) => {
+            this.b_incoming(socket, incoming)
+        });
+        socket.on('quizRoomJoin', (roomId, nickname) => {
+            this.b_quizRoomJoin(socket, roomId, nickname)
+        });
+        socket.on('quizRoomLeave', (roomId) => {
+            this.b_quizRoomLeave(socket, roomId);
+        });
+        socket.on('quizRoomPostQuestionAnswer', (roomId, answer) => {
+            this.b_quizRoomPostQuestionAnswer(socket, roomId, answer);
+        });
     }
 }
