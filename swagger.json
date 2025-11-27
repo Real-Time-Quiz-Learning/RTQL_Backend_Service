@@ -1424,6 +1424,52 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/modelQuestions"
+                },
+                "examples": {
+                  "default": {
+                    "value": {
+                      "message": "Here are some great questions!",
+                      "questions": [
+                        {
+                          "question": "What is the subject of the discussion in the text?",
+                          "options": [
+                            "sol",
+                            "questions",
+                            "planets",
+                            "solar"
+                          ],
+                          "correct": 2
+                        },
+                        {
+                          "question": "What phrase describes the location of the planets in the text?",
+                          "options": [
+                            "in the solar system",
+                            "about the planets",
+                            "the sol system",
+                            "in the sol"
+                          ],
+                          "correct": 3
+                        },
+                        {
+                          "question": "What term follows the preposition 'about' in the text?",
+                          "options": [
+                            "sol",
+                            "planets",
+                            "questions",
+                            "solar"
+                          ],
+                          "correct": 1
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
             }
           }
         },
@@ -1581,6 +1627,62 @@
                 },
                 "rtext": {
                   "type": "string"
+                },
+                "correct": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "inputQuestion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "modelQuestion": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correct": {
+            "type": "integer"
+          }
+        }
+      },
+      "modelQuestions": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "correct": {
                   "type": "integer"
